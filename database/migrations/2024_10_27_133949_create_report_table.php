@@ -17,7 +17,7 @@ class CreateReportTable extends Migration
             $table->bigIncrements('id_laporan');
             $table->unsignedBigInteger('id_pengguna');
             $table->string('jenis_laporan',50);
-            $table->string('lokasi_berkas');
+            $table->string('lokasi_berkas',100);
             $table->timestamps();
 
             $table->foreign('id_pengguna')->references('id_pengguna')->on('users');

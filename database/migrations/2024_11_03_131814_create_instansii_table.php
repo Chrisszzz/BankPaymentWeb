@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInstansiTable extends Migration
+class CreateInstansiiTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,8 @@ class CreateInstansiTable extends Migration
     {
         Schema::create('instansi', function (Blueprint $table) {
             $table->bigIncrements('id_instansi');
-            $table->string('nama_instansi');
-            $table->string('kontak');
+            $table->string('nama_instansi',50);
+            $table->string('kontak',30);
         });
     }
 
