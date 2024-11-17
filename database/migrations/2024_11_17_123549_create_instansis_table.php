@@ -14,8 +14,10 @@ class CreateInstansisTable extends Migration
     public function up()
     {
         Schema::create('instansi', function (Blueprint $table) {
-            $table->bigIncrements('id_instansi'); // Primary Key, auto increment
+            $table->bigIncrements('id'); // Primary Key, auto increment
+            $table->string('kode_instansi', 10);
             $table->string('nm_instansi', 100); // Nama instansi dengan panjang 100 karakter
+            $table->integer('total_mahasiswa');
             $table->date('tgl_mulai_kerjasama'); // Tanggal mulai kerjasama
             $table->date('tgl_akhir_kerjasama'); // Tanggal akhir kerjasama
         });

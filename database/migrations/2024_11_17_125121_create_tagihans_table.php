@@ -25,7 +25,7 @@ class CreateTagihansTable extends Migration
 
             // Foreign key ke tabel instansi
             $table->foreign('id_instansi')
-                  ->references('id_instansi')->on('instansi') // Referensi ke tabel instansi
+                  ->references('id')->on('instansi') // Referensi ke tabel instansi
                   ->onDelete('cascade') // Hapus tagihan jika instansi dihapus
                   ->onUpdate('cascade'); // Perbarui tagihan jika id_instansi berubah
 
