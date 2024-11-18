@@ -1,69 +1,70 @@
 @extends('layouts.main')
-@section('title', 'Data Instansi')
+@section('title', 'Daftar Request Data VA')
+<style>
+    form label {
+    font-weight: bold;
+    color: #3F51B5;
+}
+
+form input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    background-color: #3F51B5;
+    border: none;
+    color: white;
+}
+</style>
+
+@section('title', 'Daftar Request Data VA')
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="text-center mb-4"><strong>Data Instansi</strong></h2>
-    <a href="/instansi/create" class="btn btn-primary mb-3">
-        <i class="bi bi-plus-circle me-2"></i>Tambah Instansi
-    </a>
-
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+    <h2 class="text-center mb-4"><strong>Daftar Request Data VA</strong></h2>
 
     <!-- Form Filter -->
-    <form action="{{ url('/instansi') }}" method="GET" class="mb-4 d-flex align-items-center">
+    <form action="{{ url('/va') }}" method="GET" class="mb-4 d-flex align-items-center">
         <input type="text" name="nama_instansi" class="form-control me-2" placeholder="Cari Nama Instansi" value="{{ request('nama_instansi') }}">
         <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ url('/instansi') }}" class="btn btn-secondary ms-2">Reset</a>
+        <a href="{{ url('/va') }}" class="btn btn-secondary ms-2">Reset</a>
     </form>
 
-    <!-- Tabel Data -->
-    <table class="table table-bordered">
+    <!-- Table Data -->
+    <table class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>No</th>
                 <th>Kode Universitas</th>
                 <th>Nama Universitas</th>
+                <th>Jenis Layanan</th>
                 <th>Total Mahasiswa</th>
-                <th>Tanggal Mulai</th>
-                <th>Tanggal Berakhir</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($instansi as $key => $data)
-                <tr>
-                    <td>{{ $instansi->firstItem() + $key }}</td>
-                    <td>{{ $data->kode_instansi }}</td>
-                    <td>{{ $data->nm_instansi }}</td>
-                    <td>{{ $data->total_mahasiswa }}</td>
-                    <td>{{ $data->tgl_mulai_kerjasama }}</td>
-                    <td>{{ $data->tgl_akhir_kerjasama }}</td>
-                    <td>
-                        <div class="d-flex gap-2">
-                            <a href="/instansi/edit/{{ $data->id }}" class="btn btn-success"><i class="bi bi-pencil-fill"></i></a>
-                            <form action="/instansi/delete/{{ $data->id }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
+            @forelse ($instansi as $index => $item)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $item->kode_instansi }}</td>
+                <td>{{ $item->nm_instansi }}</td>
+                <td>Pembayaran</td>
+                <td>{{ $item->total_mahasiswa }} Orang</td>
+                <td>
+                    <a href="/instansi/edit/{{ $item->id }}" class="btn btn-info btn-sm">Lihat Detail</a>
+                </td>
+            </tr>
             @empty
-                <tr>
-                    <td colspan="7" class="text-center">Tidak ada data ditemukan.</td>
-                </tr>
+            <tr>
+                <td colspan="6" class="text-center">Tidak ada data ditemukan.</td>
+            </tr>
             @endforelse
         </tbody>
     </table>
 
-    <!-- Custom Pagination -->
     <div class="d-flex justify-content-between align-items-center mt-3">
+        <!-- Pagination Custom -->
         <nav aria-label="Pagination" class="mx-auto">
             <ul class="pagination">
                 <!-- Tombol Previous -->

@@ -7,10 +7,18 @@ use App\Instansi;
 
 class PageController extends Controller
 {
-    // Menampilkan daftar instansi
-    public function daftarinstansi()
+    public function daftarinstansi(Request $request)
     {
-        $instansi = Instansi::all();
+        $query = Instansi::query();
+
+        // Filter berdasarkan nama instansi
+        if ($request->filled('nama_instansi')) {
+            $query->where('nm_instansi', 'like', '%' . $request->nama_instansi . '%');
+        }
+
+        // Pagination (10 data per halaman)
+        $instansi = $query->paginate(10);
+
         return view('instansi.daftarinstansi', compact('instansi'));
     }
 
@@ -85,6 +93,24 @@ class PageController extends Controller
         // Redirect dengan pesan sukses
         return redirect('/instansi')->with('success', 'Data berhasil dihapus.');
     }
+
+    public function daftarVA(Request $request)
+    {
+        // Query dasar untuk Instansi
+        $query = Instansi::query();
+
+        // Filter berdasarkan nama instansi
+        if ($request->filled('nama_instansi')) {
+            $query->where('nm_instansi', 'like', '%' . $request->nama_instansi . '%');
+        }
+
+        // Eksekusi query dengan pagination
+        $instansi = $query->paginate(10);
+
+        return view('va.daftarva', compact('instansi'));
+    }
+
+
 
 
 }
