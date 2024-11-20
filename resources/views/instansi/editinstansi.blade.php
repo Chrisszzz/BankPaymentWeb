@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h3 class="text-center">Form Edit Data Instansi</h3>
+    <h3 class="text-center"><strong>Form Edit Data Instansi</strong></h3>
     <form action="/instansi/edit/{{ $instansi->id }}" method="POST">
         @csrf
         @method('PUT') <!-- Metode HTTP PUT -->

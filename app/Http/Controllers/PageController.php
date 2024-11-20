@@ -7,6 +7,18 @@ use App\Instansi;
 
 class PageController extends Controller
 {
+    public function login()
+    {
+        return view('login');
+    }
+
+    public function home() {
+        if (!session()->has('user')) {
+            return redirect('/')->withErrors(['login_error' => 'Silakan login terlebih dahulu']);
+        }
+        return view('home');
+    }
+
     public function daftarinstansi(Request $request)
     {
         $query = Instansi::query();

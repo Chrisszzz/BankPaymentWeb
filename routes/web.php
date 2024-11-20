@@ -1,7 +1,7 @@
 <?php
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', "PageController@login");
+Route::post('/', 'AuthController@authenticate');
+Route::get('/home', "pageController@home");
 Route::get("/instansi", "PageController@daftarinstansi"); // Menampilkan daftar instansi
 Route::get("/instansi/create", "PageController@tambahinstansi"); // Menampilkan form tambah instansi
 Route::post("/instansi/store", "PageController@store"); // Menambah dan Menyimpan data instansi

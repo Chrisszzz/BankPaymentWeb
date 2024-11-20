@@ -5,7 +5,6 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4"><strong>Detail Data Instansi</strong></h2>
     <h4 class="text-center text-primary">Universitas Kristen Duta Wacana</h4>
-
     <table class="table table-bordered table-hover">
         <thead class="bg-primary text-white">
             <tr>

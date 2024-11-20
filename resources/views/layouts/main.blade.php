@@ -70,7 +70,7 @@
                 <img src="https://www.freepnglogos.com/uploads/logo-bca-png/bca-online-digital-printing-company-jakarta-mediakreasi-12.png" width="150" height="120" alt="Logo" class="img-fluid">
             </div>
             <div class="menu">
-                <a href="/" class="d-block py-2 text-white"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="/home" class="d-block py-2 text-white"><i class="bi bi-speedometer2"></i> Dashboard</a>
                 <a href="/instansi" class="d-block py-2 text-white"><i class="bi bi-building"></i> Data Instansi</a>
                 <a href="/va" class="d-block py-2 text-white"><i class="bi bi-card-list"></i> Data VA</a>
                 <a href="/reports" class="d-block py-2 text-white"><i class="bi bi-file-bar-graph"></i> Report Tagihan</a>
