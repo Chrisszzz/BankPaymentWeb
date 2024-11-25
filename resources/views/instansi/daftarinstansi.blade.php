@@ -5,7 +5,7 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4"><strong>Data Instansi</strong></h2>
     <a href="/instansi/create" class="btn btn-primary mb-3">
-        <i class="bi bi-plus-circle me-2"></i>Tambah Instansi
+        <i class="bi bi-plus-circle me-2">&nbsp;</i>Tambah Instansi
     </a>
 
     @if (session('success'))

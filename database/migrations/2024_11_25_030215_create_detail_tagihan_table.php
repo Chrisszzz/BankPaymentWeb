@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDetailTagihansTable extends Migration
+class CreateDetailTagihanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,11 +15,13 @@ class CreateDetailTagihansTable extends Migration
     {
         Schema::create('detail_tagihan', function (Blueprint $table) {
             $table->increments('id_dtl_tagihan'); // INT, Primary Key, Auto Increment
-            $table->decimal('biaya_sks', 10, 2);  // DECIMAL(10,2) untuk biaya SKS
-            $table->decimal('biaya_ICE', 10, 2);  // DECIMAL(10,2) untuk biaya ICE
-            $table->decimal('biaya_lainnya', 10, 2); // DECIMAL(10,2) untuk biaya lainnya
-            $table->decimal('hrg_denda', 10, 2);  // DECIMAL(10,2) untuk harga denda
-            $table->timestamps();                // created_at & updated_at
+            $table->integer('biaya_sks');  // integer untuk biaya SKS
+            $table->integer('biaya_ICE');  // integer untuk biaya ICE
+            $table->integer('biaya_kesehatan'); // integer untuk biaya lainnya
+            $table->integer('biaya_gedung'); // integer untuk biaya lainnya
+            $table->integer('potongan_prestasi'); // integer untuk biaya lainnya
+            $table->integer('hrg_denda');  // integer untuk harga denda
+            $table->timestamps();
         });
     }
 
