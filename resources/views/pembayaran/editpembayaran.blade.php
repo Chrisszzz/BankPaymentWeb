@@ -1,6 +1,5 @@
 @extends('layouts.main2')
 @section('title', 'Edit Data Pembayaran')
-
 @section('content')
 <div class="container mt-5">
     <h3 class="text-center"><strong>Edit Data Pembayaran</strong></h3>
@@ -29,10 +28,7 @@
         <!-- Periode -->
         <div class="form-group">
             <label for="periode">Periode</label>
-            <select name="periode" id="periode" class="form-control">
-                <option value="GASAL" {{ $tagihan->periode == 'GASAL' ? 'selected' : '' }}>GASAL</option>
-                <option value="GENAP" {{ $tagihan->periode == 'GENAP' ? 'selected' : '' }}>GENAP</option>
-            </select>
+            <input type="text" name="periode" id="periode" class="form-control" value="{{ $tagihan->periode }}" required>
         </div>
 
         <!-- ICE -->
@@ -93,15 +89,6 @@
         <div class="form-group">
             <label for="tgl_jth_tempo">Tanggal Jatuh Tempo</label>
             <input type="date" name="tgl_jth_tempo" id="tgl_jth_tempo" class="form-control" value="{{ $tagihan->tgl_jth_tempo }}" required>
-        </div>
-
-        <!-- Status -->
-        <div class="form-group">
-            <label for="status">Status</label>
-            <select name="status" id="status" class="form-control">
-                <option value="Belum Dibayar" {{ $tagihan->status == 'Belum Dibayar' ? 'selected' : '' }}>Belum Dibayar</option>
-                <option value="Dibayar" {{ $tagihan->status == 'Dibayar' ? 'selected' : '' }}>Dibayar</option>
-            </select>
         </div>
 
         <!-- Deskripsi -->

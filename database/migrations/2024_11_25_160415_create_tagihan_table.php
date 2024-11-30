@@ -20,13 +20,14 @@ class CreateTagihanTable extends Migration
             $table->unsignedInteger('id_mahasiswa'); // INT, Primary Key, Auto Increment
             $table->decimal('jmlh_tgh', 10, 2); // Jumlah Tagihan
             $table->date('tgl_jth_tempo'); // Tanggal Jatuh Tempo
-            $table->enum('status', ['Belum Dibayar', 'Dibayar']); // Status
             $table->string('deskripsi', 255); // Deskripsi
             $table->string('periode', 50); // Periode
             $table->integer('sks'); // sks
             $table->string('ice', 50); // ice
             $table->string('potongan_prestasi', 50); // potongan prestasi
             $table->string('denda', 50); // denda
+            $table->enum('status_transaksi', ['Menunggu Pembayaran', 'Sudah Bayar', 'Gagal']);// ENUM, Status VA
+            $table->BigInteger('no_va')->nullable(); // INT, Primary Key, Auto Increment
             $table->timestamps(); // created_at & updated_at
 
             // Foreign key ke tabel instansi
@@ -55,6 +56,13 @@ class CreateTagihanTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tagihan');
+         // Disable foreign key constraints
+    Schema::disableForeignKeyConstraints();
+
+    // Drop the table
+    Schema::dropIfExists('tagihan');
+
+    // Enable foreign key constraints
+    Schema::enableForeignKeyConstraints();
     }
 }

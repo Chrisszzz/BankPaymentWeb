@@ -28,11 +28,7 @@
         <!-- Periode -->
         <div class="form-group">
             <label for="periode">Periode</label>
-            <select name="periode" id="periode" class="form-control" required>
-                <option value="">-- Pilih Periode --</option>
-                <option value="GASAL">GASAL</option>
-                <option value="GENAP">GENAP</option>
-            </select>
+            <input type="text" name="periode" id="periode" class="form-control" placeholder="Periode" required>
         </div>
 
         <!-- ICE -->
@@ -93,15 +89,6 @@
         <div class="form-group">
             <label for="tgl_jth_tempo">Tanggal Jatuh Tempo</label>
             <input type="date" name="tgl_jth_tempo" id="tgl_jth_tempo" class="form-control" required>
-        </div>
-
-        <!-- Status -->
-        <div class="form-group">
-            <label for="status">Status</label>
-            <select name="status" id="status" class="form-control" required>
-                <option value="Belum Dibayar">Belum Dibayar</option>
-                <option value="Dibayar">Dibayar</option>
-            </select>
         </div>
 
         <!-- Deskripsi -->

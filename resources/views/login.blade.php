@@ -7,66 +7,98 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
   <style>
-    .login-container
-    {
-        display: flex;
-        height: 100vh;
+    body, html {
+        height: 100%;
         margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
     }
-
-    .login-image
-    {
+    .card {
+        width: 900px; /* Perbesar ukuran card */
+        max-width: 100%;
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 30px;
+    }
+    .card-image {
         flex: 1;
-        background-image: url({{ asset('https://st3.depositphotos.com/9042388/18207/v/450/depositphotos_182073696-stock-illustration-cityscape-with-modern-office-buildings.jpg') }});
+        background-image: url('https://img.freepik.com/premium-vector/mobile-banking-online-payment-concept-people-using-laptop-mobile-smartphone_566886-10835.jpg?w=740');
         background-size: cover;
-
+        background-position: center;
     }
-
-    .login-form
-    {
+    .card-form {
         flex: 1;
+        padding: 40px; /* Tambahkan padding agar lebih nyaman */
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: center;
-        padding: 20px;
+        background-color: #ffffff;
     }
-
-    </style>
+    .card-form img {
+        margin-bottom: 30px; /* Tambahkan jarak antara logo dan form */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .form-group label {
+        font-size: 16px; /* Perbesar ukuran font label */
+        font-weight: bold;
+    }
+    .form-control {
+        height: 50px; /* Sedikit perbesar input */
+        border-radius: 5px;
+        font-size: 15px;
+    }
+    .btn {
+        background-color: #3F51B5;
+        color: white;
+        height: 50px; /* Perbesar tombol */
+        width: 100%;
+        border-radius: 10px;
+        font-size: 18px; /* Perbesar teks tombol */
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+        background-color: #303F9F;
+    }
+  </style>
 </head>
 <body>
+  @if ($errors->has('login_error'))
+  <div class="alert alert-danger text-center" style="margin-bottom: 20px;">
+      {{ $errors->first('login_error') }}
+  </div>
+  @endif
 
-    @if ($errors->has('login_error'))
-    <div class="alert alert-danger">
-        {{ $errors->first('login_error') }}
-    </div>
-    @endif
+  <div class="card">
+    <!-- Bagian Gambar -->
+    <div class="card-image"></div>
 
-<div class="login-container">
-  <div class="login-image"></div>
-  <div class="login-form">
-    <div class="container" style="max-width: 500px;">
-      <img src="{{ asset ('https://minang.geoparkrun.com/wp-content/uploads/2022/11/bca-logo.png')}}" width="200px" height="200px";>
+    <!-- Bagian Form Login -->
+    <div class="card-form">
+      <img src="https://minang.geoparkrun.com/wp-content/uploads/2022/11/bca-logo.png" alt="Logo" width="120px">
       <form action="/" method="POST">
         @csrf
         <div class="form-group">
-            <label for="text">Username:</label>
-            <input type="text" class="form-control" id="username" placeholder="Masukan username" name="username" style="height: 56px;">
+          <label for="username">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="Masukkan username" name="username">
         </div>
         <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" placeholder="Masukan password" name="password" style="height: 56px;">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="Masukkan password" name="password">
         </div>
-        <div class="text-center">
-            <button type="submit" class="btn" style="background-color:#3F51B5; color: white; height: 40px; width: 472px; border-radius: 5px; font-size: 15px;">
-                <b>LOGIN</b>
-            </button>
-        </div>
-    </form>
+        <button type="submit" class="btn">
+          Login
+        </button>
+      </form>
     </div>
   </div>
-</div>
 </body>
 </html>

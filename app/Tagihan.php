@@ -21,10 +21,29 @@ class Tagihan extends Model
             'ice',
             'potongan_prestasi',
             'denda',
+            'no_va',
+            'status_transaksi',
     ];
 
     public function detailTagihan()
     {
         return $this->belongsTo(DetailTagihan::class, 'id_dtl_tagihan', 'id_dtl_tagihan');
     }
+
+    // Relasi dengan model Va, satu tagihan memiliki satu VA
+    public function va()
+    {
+        return $this->hasOne(Va::class, 'id_tagihan', 'id_tagihan');
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function instansi()
+    {
+        return $this->belongsTo(Instansi::class, 'id_instansi', 'kode_instansi');
+    }
+
 }

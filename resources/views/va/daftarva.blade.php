@@ -1,38 +1,51 @@
 @extends('layouts.main')
-@section('title', 'Daftar Request Data VA')
+@section('title', 'Data VA')
+
 <style>
-    form label {
-    font-weight: bold;
-    color: #3F51B5;
-}
+    table {
+        font-size: 14px;
+    }
 
-form input {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+    table th {
+        background-color: #3F51B5;
+        color: white;
+    }
 
-form button {
-    background-color: #3F51B5;
-    border: none;
-    color: white;
-}
+    table td {
+        vertical-align: middle;
+    }
+
+    .btn-primary {
+        background-color: #3F51B5;
+        border: none;
+    }
+
+    .search-bar-container {
+        display: flex;
+        justify-content: flex-end; /* Menempatkan form di sebelah kanan */
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        max-width: 300px; /* Membatasi lebar search bar */
+    }
 </style>
-
-@section('title', 'Daftar Request Data VA')
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="text-center mb-4"><strong>Daftar Request Data VA</strong></h2>
+    <h2 class="text-center mb-4"><strong>Data VA</strong></h2>
 
     <!-- Form Filter -->
-    <form action="{{ url('/va') }}" method="GET" class="mb-4 d-flex align-items-center">
-        <input type="text" name="nama_instansi" class="form-control me-2" placeholder="Cari Nama Instansi" value="{{ request('nama_instansi') }}">
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ url('/va') }}" class="btn btn-secondary ms-2">Reset</a>
-    </form>
+    <div class="search-bar-container">
+        <form action="{{ url('/va') }}" method="GET" class="d-flex align-items-center">
+            <input type="text" name="nama_instansi" class="form-control me-2" placeholder="Cari Nama Instansi" value="{{ request('nama_instansi') }}">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url('/va') }}" class="btn btn-secondary ms-2">Reset</a>
+        </form>
+    </div>
 
     <!-- Table Data -->
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>No</th>
@@ -50,9 +63,9 @@ form button {
                 <td>{{ $item->kode_instansi }}</td>
                 <td>{{ $item->nm_instansi }}</td>
                 <td>Pembayaran</td>
-                <td>{{ $item->total_mahasiswa }} Orang</td>
+                <td>{{ $item->total_mahasiswa }}</td>
                 <td>
-                    <a href="/instansi/edit/{{ $item->id }}" class="btn btn-info btn-sm">Lihat Detail</a>
+                    <center><a href="va/detailva" class="btn btn-primary btn-sm">Lihat Detail</a></center>
                 </td>
             </tr>
             @empty

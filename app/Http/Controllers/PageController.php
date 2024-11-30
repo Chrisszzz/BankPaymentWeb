@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Instansi;
 use App\Tagihan;
+use App\Va;
+use App\Mahasiswa;
 use App\DetailTagihan;
+use App\Transaksi;
 
 class PageController extends Controller
 {
@@ -18,7 +21,17 @@ class PageController extends Controller
         if (!session()->has('user')) {
             return redirect('/')->withErrors(['login_error' => 'Silakan login terlebih dahulu']);
         }
-        return view('home');
+
+        // Ambil total tagihan
+        $totalTagihan = Tagihan::sum('jmlh_tgh');
+
+        // Ambil total instansi
+        $totalInstansi = Instansi::count();
+
+        // Ambil jumlah tagihan yang "Menunggu Pembayaran"
+        $menungguPembayaranCount = Tagihan::where('status_transaksi', 'Menunggu Pembayaran')->count();
+
+        return view('home', compact('totalTagihan', 'totalInstansi', 'menungguPembayaranCount'));
     }
 
     public function daftarinstansi(Request $request)
@@ -120,7 +133,6 @@ class PageController extends Controller
 
         // Eksekusi query dengan pagination
         $instansi = $query->paginate(10);
-
         return view('va.daftarva', compact('instansi'));
     }
 
@@ -156,7 +168,6 @@ class PageController extends Controller
             'potongan_prestasi' => 'required|string',
             'denda' => 'required|string',
             'tgl_jth_tempo' => 'required|date',
-            'status' => 'required|string',
             'deskripsi' => 'nullable|string',
         ]);
 
@@ -193,12 +204,13 @@ class PageController extends Controller
             'denda' => $request->denda,
             'jmlh_tgh' => $jumlahTagihan,
             'tgl_jth_tempo' => $request->tgl_jth_tempo,
-            'status' => $request->status,
             'deskripsi' => $request->deskripsi,
         ]);
 
         return redirect('/pembayaran')->with('success', 'Data pembayaran berhasil disimpan.');
     }
+
+
 
     public function getDetailTagihan(Request $request)
     {
@@ -240,7 +252,7 @@ class PageController extends Controller
         $ice = $request->input('ice');
         $potonganPrestasi = $request->input('potongan_prestasi');
         $denda = $request->input('denda');
-
+        $periode = $request ->input('periode');
         // Menghitung jumlah tagihan berdasarkan input yang baru
         $biayaSks = $detailTagihan->biaya_sks * $sks;
         $biayaIce = $ice === 'Mengambil' ? $detailTagihan->biaya_ICE : 0;
@@ -256,7 +268,7 @@ class PageController extends Controller
             'potongan_prestasi' => $potonganPrestasi,
             'denda' => $denda,
             'jmlh_tgh' => $jumlahTagihan, // Update jumlah tagihan
-            // kolom lain yang perlu diperbarui
+            'periode' => $periode,
         ]);
 
         return redirect('/pembayaran')->with('success', 'Data pembayaran berhasil diperbarui!');
@@ -281,6 +293,164 @@ class PageController extends Controller
         // Pass the data to the view
         return view('detailtagihan.manajemenpembayaran', compact('detailTagihan'));
     }
+
+    public function tambahmahasiswa()
+    {
+        return view('mahasiswa.tambah_mahasiswa');
+    }
+
+    public function formtambahmahasiswa()
+    {
+        return view('mahasiswa.form_tambah_mahasiswa');
+    }
+
+    public function detailva()
+    {
+        // Ambil data tagihan beserta relasi VA dan Mahasiswa
+        $tagihan = Tagihan::with(['va', 'mahasiswa'])->paginate(5);
+        // Periksa apakah no_va kosong, jika iya set status_transaksi menjadi null
+        foreach ($tagihan as $item) {
+            if (is_null($item->no_va)) {
+                $item->status_transaksi = null; // Kosongkan status_transaksi
+            }
+        }
+
+        return view('va.detailva', compact('tagihan'));
+    }
+
+    // public function generateVa($id)
+    // {
+    // // Cari data tagihan berdasarkan ID
+    // $tagihan = Tagihan::findOrFail($id);
+
+    // // Cek jika status_transaksi sudah "Sudah Bayar"
+    // if ($tagihan->status_transaksi == 'Sudah Bayar') {
+    //     return redirect()->back()->with('error', 'Tagihan sudah dibayar, tidak dapat di-generate ulang.');
+    // }
+
+    // // Generate nomor VA baru
+    // $generatedVa = $tagihan->id_instansi . $tagihan->id_mahasiswa;
+
+    // // Update no_va dan status_transaksi pada tagihan
+    // $tagihan->update([
+    //     'no_va' => $generatedVa,
+    //     'status_transaksi' => 'Menunggu Pembayaran', // Tetap menunggu pembayaran
+    // ]);
+
+    // return redirect()->back()->with('success', 'Nomor VA berhasil digenerate.');
+    // }
+
+    public function generateVa($id)
+{
+    // Cari data tagihan berdasarkan ID
+    $tagihan = Tagihan::findOrFail($id);
+
+    // Cek jika status_transaksi sudah "Sudah Bayar"
+    if ($tagihan->status_transaksi == 'Sudah Bayar') {
+        return redirect()->back()->with('error', 'Tagihan sudah dibayar, tidak dapat di-generate ulang.');
+    }
+
+    // Ambil data instansi dan mahasiswa
+    $instansiId = $tagihan->id_instansi;
+    $mahasiswaId = $tagihan->id_mahasiswa;
+
+    // Format VA: ID_INSTANSI-ID_MAHASISWA
+    $noVa = $instansiId . $mahasiswaId;
+
+    // Buat data VA baru
+    Va::create([
+        'no_va' => $noVa,
+        'id_mahasiswa' => $mahasiswaId,
+        'id_tagihan' => $tagihan->id_tagihan,
+        'status_va' => 'Aktif', // Set status VA menjadi Aktif
+    ]);
+
+    // Update no_va dan status_transaksi pada tagihan
+    $tagihan->update([
+        'no_va' => $noVa,
+        'status_transaksi' => 'Menunggu Pembayaran', // Tetap menunggu pembayaran
+    ]);
+
+    return redirect()->back()->with('success', 'Nomor VA berhasil digenerate.');
+}
+
+public function daftarTransaksi()
+{
+    // Ambil data transaksi beserta tagihan dan mahasiswa, kecuali yang statusnya 'Gagal'
+    $transaksi = Transaksi::with(['tagihan.mahasiswa'])
+        ->where('status', '!=', 'Gagal')  // Exclude transactions with status 'Gagal'
+        ->get();
+
+    // Perbarui status berdasarkan kondisi
+    foreach ($transaksi as $data) {
+        if ($data->jmlh_bayar == $data->tagihan->jmlh_tgh) {
+            $data->update(['status' => 'Sudah Bayar']);
+            $data->tagihan->update(['status_transaksi' => 'Sudah Bayar']);
+        } elseif ($data->jmlh_bayar != $data->tagihan->jmlh_tgh) {
+            $data->update(['status' => 'Gagal']);
+            $data->tagihan->update(['status_transaksi' => 'Gagal']);
+        }
+    }
+
+    return view('transaksi.transaksi', ['transaksi' => $transaksi]);
+}
+
+
+public function verifikasiTransaksi(Request $request, $id)
+{
+    // Cari transaksi berdasarkan ID
+    $transaksi = Transaksi::findOrFail($id);
+
+    // Perbarui status verifikasi menjadi 'Sudah Terverifikasi'
+    $transaksi->update([
+        'status_verifikasi' => 'Sudah Terverifikasi'
+    ]);
+
+    return redirect()->back()->with('success', 'Status transaksi berhasil diverifikasi.');
+}
+
+public function logtransaksi(Request $request)
+{
+    // Query dasar dengan relasi
+    $query = Transaksi::with(['tagihan.mahasiswa', 'tagihan.instansi']);
+
+    if ($request->filled('tanggal_dari') && $request->filled('tanggal_sampai')) {
+        $query->whereBetween('created_at', [
+            $request->tanggal_dari . ' 00:00:00',
+            $request->tanggal_sampai . ' 23:59:59',
+        ]);
+    }
+
+
+    // Filter berdasarkan keyword di instansi atau mahasiswa
+    if ($request->filled('filter_keyword')) {
+        $keyword = $request->filter_keyword;
+        $query->whereHas('tagihan.instansi', function ($q) use ($keyword) {
+            $q->where('nm_instansi', 'like', '%' . $keyword . '%');
+        })->orWhereHas('tagihan.mahasiswa', function ($q) use ($keyword) {
+            $q->where('nm_mhs', 'like', '%' . $keyword . '%')
+              ->orWhere('id_mahasiswa', 'like', '%' . $keyword . '%');
+        });
+    }
+
+    // Ambil data dan transformasi
+    $transaksi = $query->get()->map(function ($item) {
+        return [
+            'no_va' => $item->tagihan->no_va,
+            'nama_mahasiswa' => $item->tagihan->mahasiswa->nm_mhs ?? '-',
+            'nama_instansi' => $item->tagihan->instansi->nm_instansi ?? '-',
+            'jenis_tagihan' => $item->tagihan->deskripsi ?? '-',
+            'tanggal_transaksi' => $item->created_at->format('d - m - Y'),
+            'total_bayar' => 'Rp. ' . number_format($item->jmlh_bayar, 0, ',', '.'),
+            'status_transaksi' => $item->status,
+        ];
+    });
+
+    // Kirim ke view
+    return view('transaksi.logtransaksi', compact('transaksi'));
+}
+
+
 
 
 

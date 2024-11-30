@@ -2,17 +2,17 @@
 
 use Illuminate\Http\Request;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::get('/va/details', 'APIController@detailva');
+
+Route::get('/va', 'APIController@listVa'); // GET: Menampilkan semua data VA
+Route::get('/va/{no_va}', 'APIController@detailVa'); // GET: Menampilkan detail data VA berdasarkan nomor VA
+
+Route::get('/tagihan', 'APIController@getTagihan');       // GET: Menampilkan data tagihan
+Route::post('/tagihan', 'APIController@createTagihan');   // POST: Membuat tagihan baru
+Route::put('/tagihan/{id}', 'APIController@updateTagihan'); // PUT: Mengupdate tagihan
+
+
