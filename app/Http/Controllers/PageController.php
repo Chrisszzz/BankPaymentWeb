@@ -487,7 +487,7 @@ public function editpembayaran(Request $request, $id_tagihan)
     {
         $data = KomponenPembayaran::where('id_komponen_pembayaran',$id_komponen_pembayaran)->first();
         $data -> delete();
-        return response()->json(['status'=>'true', 'message'=>'Data Komponen Pembayaran berhasil dihapus !!']);
+        return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil dihapus !!']);
     }
 
 
