@@ -1,7 +1,11 @@
 <?php
-Route::get('/', "PageController@login");
-Route::post('/', 'AuthController@authenticate');
-Route::get('/home', "pageController@home");
+Route::get('/', "PageController@login")->name('login');
+Route::post('request_login', 'AuthController@authenticate')->name('authenticate.login');
+Route::get('auth_logout', 'AuthController@logout')->name('logout');
+Route::middleware('auth')->group(function() {
+	
+	Route::get('/home', "pageController@home")->name('index.home');
+	Route::post('myprofil/update',"PageController@update_profil")->name('update_profil');
 
 Route::get("/instansi", "PageController@daftarinstansi"); // Menampilkan daftar instansi
 Route::get("/instansi/create", "PageController@tambahinstansi"); // Menampilkan form tambah instansi
@@ -36,7 +40,7 @@ Route::post("/manajemen_pembayaran/save", "PageController@save_komponen_pembayar
 Route::get("/manajemen_pembayaran/get_edit/{id_komponen_pembayaran}", "PageController@get_edit_komponen_pembayaran"); // Menampilkan komp pemb
 Route::post("/manajemen_pembayaran/update", "PageController@update_komponen_pembayaran")->name('update_komponen_pembayaran');
 Route::get("/manajemen_pembayaran/delete/{id_komponen_pembayaran}", "PageController@hapus_komponen_pembayaran"); // Menampilkan komp pemb
-
+});
 // Route::get("/diskon", "PageController@diskon")->name('index.diskon'); // Menampilkan komp pemb
 // Route::post("/diskon/save", "PageController@save_diskon")->name('save_diskon');
 // Route::get("/diskon/get_edit/{id_diskon}", "PageController@get_edit_diskon"); // Menampilkan komp pemb

@@ -7,6 +7,9 @@ use App\Instansi;
 use App\Tagihan;
 use App\Va;
 use App\Mahasiswa;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\DetailTagihan;
 use App\KomponenPembayaran;
 use App\Transaksi;
@@ -21,9 +24,9 @@ class PageController extends Controller
     }
 
     public function home() {
-        if (!session()->has('user')) {
-            return redirect('/')->withErrors(['login_error' => 'Silakan login terlebih dahulu']);
-        }
+        // if (!session()->has('user')) {
+            // return redirect('/')->withErrors(['login_error' => 'Silakan login terlebih dahulu']);
+        // }
 
         // Ambil total tagihan
         $totalTagihan = Tagihan::sum('jmlh_tgh');
@@ -489,8 +492,18 @@ public function editpembayaran(Request $request, $id_tagihan)
         $data -> delete();
         return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil dihapus !!']);
     }
-
-
+    public function update_profil(Request $request)
+    {
+        $data = User::where('id',Auth::user()->id)->first();
+        $data -> name = $request->name;
+        $data -> email = $request->email;
+        if ($request->password != '') {
+            $data -> password = hash::make($request->password);
+            $data -> password_check = $request->password;
+        }
+        $data -> save();
+        return response()->json(['status'=>'true', 'message'=>'Profil berhasil diperbarui !!']);
+    }
 }
 
 
