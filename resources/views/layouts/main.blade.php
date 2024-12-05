@@ -201,7 +201,6 @@
 
             <div class="footer mt-auto pt-5">
                 <p class="text-white">ADMINISTRATOR</p>
-                <p class="text-white">Admin01</p>
             </div>
         </div>
 
@@ -209,12 +208,81 @@
         <div class="content flex-grow-1">
             <!-- Header -->
             <div class="header bg-light d-flex align-items-center justify-content-end px-4 py-2">
-                <div class="user-info d-flex align-items-center">
-                    <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle">
-                    <span class="ml-2 font-weight-bold">Admin Bank</span>
+                <!--  <div class="user-info d-flex align-items-center">
+      <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle">
+      <span class="ml-2 font-weight-bold">{{ Auth::user()->name }}</span>
+    </div> -->
+                <div class="dropdown">
+                    <a class="dropdown-toggle" style="text-decoration: none;color: black;" href="javascript:void(0)"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle">
+                        <span class="ml-2 font-weight-bold">{{ Auth::user()->name }}</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item btn_my_profil" href="javascript:void(0)">Profil Saya</a>
+                        <a class="dropdown-item" href=" {{ route('logout') }} ">Logout</a>
+                    </div>
                 </div>
             </div>
-
+            <!-- profil -->
+            <div class="modal fade text-left" data-bs-backdrop="static" id="modal_my_profil" tabindex="-1"
+                role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info" style="color: white;">
+                            <h5 class="modal-title text-white" id="myModalLabel1"></h5>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" id="myProfilForm" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Nama <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" required="" class="form-control"
+                                                value="{{ Auth::user()->name }}" id="name" name="name">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Username <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" required="" class="form-control"
+                                                value="{{ Auth::user()->email }}" id="email" name="email">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="mb-3 form-password-toggle">
+                                            <div class="d-flex justify-content-between">
+                                                <label class="col-form-label" for="password">Password</label>
+                                            </div>
+                                            <div class="input-group input-group-merge">
+                                                <input type="text" id="password" class="form-control"
+                                                    name="password"
+                                                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                                    aria-describedby="password" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="modal-loading" id="modal-loading" style="display: none;">
+                            <span class="fa fa-spinner fa-pulse fa-3x"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal">
+                                <span>Tutup</span>
+                            </button>
+                            <button class="btn btn-primary ml-1 submit">
+                                <i class="bx bx-save"></i> <span>Simpan Profil</span>
+                            </button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- end profil -->
             <!-- Main Content -->
             <div class="main-content p-5">
                 @yield('content')
@@ -230,8 +298,64 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
 </body>
 @yield('scripts')
+<script type="text/javascript">
+    $(".btn_my_profil").click(function() {
+        $(".modal-title").html('<i class="bx bx-user"></i> Ubah Profil');
+        $("#modal_my_profil").modal('show');
+    });
+    $(function() {
+        $('#myProfilForm').submit(function(e) {
+            e.preventDefault();
+            if ($(this).data('submitted') === true) {
+                return;
+            }
+            $("#loading").show();
+            $(this).data('submitted', true);
+            let formData = new FormData(this);
+            $.ajax({
+                method: "POST",
+                headers: {
+                    Accept: "application/json"
+                },
+                contentType: false,
+                processData: false,
+                url: "{{ route('update_profil') }}",
+                data: formData,
+                success: function(response) {
+                    $('#myProfilForm').data('submitted', false);
+                    $("#loading").hide();
+                    if (response.status == 'true') {
+                        Swal.fire({
+                            title: 'Profil Success',
+                            text: response.message,
+                            icon: 'success',
+                            type: 'success'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.location.href = "";
+                            }
+                        });
+                    } else {
+                        showToast('bg-danger', 'Profil Error', response.message);
+                    }
+                },
+                error: function(response) {
+                    $("#loading").hide();
+                    $('#myProfilForm').data('submitted', false);
+                    showToast('bg-danger', 'Profil Error', response.message);
+                }
+            });
+        });
+    });
+</script>
 
 </html>
