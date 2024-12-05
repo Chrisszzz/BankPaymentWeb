@@ -3,29 +3,24 @@
 
 @section('content')
 <div class="container mt-5">
-    <div class="card w-100" style="max-width: 100%;"> <!-- Mengatur lebar card dengan max-width -->
-        <div class="card-header bg-primary text-white">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><strong>Data Pembayaran</strong></h4>
         </div>
-        <br>
-        <div class="card-body p-2"> <!-- Mengurangi padding pada card-body -->
-            <!-- Tombol Tambah Data dan Search Bar Sejajar -->
-            <div class="d-flex justify-content-between mb-4">
+        <div class="card-body px-3 py-3">
+            <!-- Baris untuk tombol tambah data dan search bar -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <!-- Tombol Tambah Data -->
-                <div>
-                    <a href="/pembayaran/create" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i> Tambah Data
-                    </a>
-                </div>
+                <a href="/pembayaran/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Tambah Data
+                </a>
 
-                <!-- Form Filter (Search Bar) -->
-                <form action="{{ url('/pembayaran') }}" method="GET" class="d-flex w-auto">
-                    <input type="text" name="id_mahasiswa" class="form-control me-2" placeholder="Cari NIM Mahasiswa" value="{{ request('id_mahasiswa') }}">
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ url('/pembayaran') }}" class="btn btn-secondary ms-2">Reset</a>
+                <!-- Form Filter -->
+                <form action="{{ url('/pembayaran') }}" method="GET" class="d-flex align-items-center" style="max-width: 300px;">
+                    <input type="text" name="id_mahasiswa" class="form-control me-2 w-auto" placeholder="Cari NIM Mahasiswa" value="{{ request('id_mahasiswa') }}">
+                    <button type="submit" class="btn btn-primary">Cari</button>
                 </form>
             </div>
-            <br>
 
             <!-- Flash Message -->
             @if (session('success'))
@@ -36,7 +31,7 @@
 
             <!-- Tabel Data -->
             <div class="table-responsive">
-                <table class="table table-hover table-sm">
+                <table class="table table-striped text-center table-sm w-100">
                     <thead class="table-light">
                         <tr>
                             <th>No</th>
@@ -60,8 +55,13 @@
                                 <td>{{ $tagihan->firstItem() + $key }}</td>
                                 <td>{{ $data->id_mahasiswa }}</td>
                                 <td>{{ $data->periode }}</td>
-                                <td>{{ $data->sks }} SKS</td>
-                                <td>{{ $data->ice === 'Mengambil' ? 'Rp. ' . number_format($data->detailTagihan->biaya_ICE ?? 0, 0, ',', '.') : 'Rp. 0' }}</td>
+                                <td>
+                                    {{ $data->sks }} SKS
+                                    ({{ $data->detailTagihan ? 'Rp. ' . number_format($data->detailTagihan->biaya_sks * $data->sks, 0, ',', '.') : '-' }})
+                                </td>
+                                <td>
+                                    {{ $data->ice === 'Mengambil' && $data->detailTagihan ? 'Rp. ' . number_format($data->detailTagihan->biaya_ICE ?? 0, 0, ',', '.') : 'Rp. 0' }}
+                                </td>
                                 <td>{{ 'Rp. ' . number_format($data->detailTagihan->biaya_kesehatan ?? 0, 0, ',', '.') }}</td>
                                 <td>{{ 'Rp. ' . number_format($data->detailTagihan->biaya_gedung ?? 0, 0, ',', '.') }}</td>
                                 <td>{{ $data->potongan_prestasi === 'Iya' ? 'Rp. ' . number_format($data->detailTagihan->potongan_prestasi ?? 0, 0, ',', '.') : 'Rp. 0' }}</td>
