@@ -6,6 +6,9 @@ Route::middleware('auth')->group(function() {
 
 Route::get('/home', "pageController@home")->name('index.home');
 Route::post('myprofil/update',"PageController@update_profil")->name('update_profil');
+	
+Route::get('/home', "pageController@home")->name('index.home');
+Route::post('myprofil/update',"PageController@update_profil")->name('update_profil');
 
 Route::get("/instansi", "PageController@daftarinstansi"); // Menampilkan daftar instansi
 Route::get("/instansi/create", "PageController@tambahinstansi"); // Menampilkan form tambah instansi
@@ -41,6 +44,9 @@ Route::get("/manajemen_pembayaran/get_edit/{id_komponen_pembayaran}", "PageContr
 Route::post("/manajemen_pembayaran/update", "PageController@update_komponen_pembayaran")->name('update_komponen_pembayaran');
 Route::get("/manajemen_pembayaran/delete/{id_komponen_pembayaran}", "PageController@hapus_komponen_pembayaran");
 });
+Route::get("/manajemen_pembayaran/delete/{id_komponen_pembayaran}", "PageController@hapus_komponen_pembayaran"); // Menampilkan komp pemb
+});
+
 
 
 

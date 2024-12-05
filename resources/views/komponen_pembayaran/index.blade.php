@@ -7,23 +7,30 @@
     <h4>Loading</h4>
 </div>
 <div class="container mt-5">
+
     <h2 class="text-center mb-4"><strong>Manajemen Pembayaran</strong></h2>
     <br>
     <div class="row">
         <div class="col-lg-2 mb-3">
             <button type="button" class="btn btn-block block new" style="background: #3F51B5;color: white;">
                 <i class="bi bi-plus"></i> Tambah Data
+    <h2 class="text-center mb-4"><strong>Data Manajemen Pembayaran</strong></h2>
+    <br>
+    <div class="row">
+        <div class="col-lg-4 mb-3">
+            <button type="button" class="btn btn-block block new" style="background: #3F51B5;color: white;">
+                <i class="bi bi-plus"></i> Tambah Manajemen Manajemen
             </button>
         </div>
     </div>
     <div class="card">
         <div class="card-header" style="background-color: #3F51B5; color: white;">
             <h5>Manajemen Pembayaran</h5>
+            <h5>Data Manajemen Pembayaran</h5>
         </div>
         <div class="card-body">
            <!--  <div class="row">
                 <div class="col-lg-4 mb-3">
-
                 </div>
             </div> -->
             <table class="table table-striped" id="komponen_table" style="width: 100%;">

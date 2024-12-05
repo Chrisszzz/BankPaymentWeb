@@ -61,185 +61,250 @@ class PageController extends Controller
     public function store(Request $request)
     {
          // Validasi data
-         $request->validate([
-            'kode_instansi' => 'required|string',
-            'nm_instansi' => 'required|string',
-            'total_mahasiswa' => 'required|integer',
-            'tgl_mulai_kerjasama' => 'required|date',
-            'tgl_akhir_kerjasama' => 'required|date',
-        ]);
+       $request->validate([
+        'kode_instansi' => 'required|string',
+        'nm_instansi' => 'required|string',
+        'total_mahasiswa' => 'required|integer',
+        'tgl_mulai_kerjasama' => 'required|date',
+        'tgl_akhir_kerjasama' => 'required|date',
+    ]);
 
         // Simpan data
-        Instansi::create($request->all());
+       Instansi::create($request->all());
 
         // Redirect dengan pesan sukses
-        return redirect('/instansi')->with('success', 'Data berhasil disimpan.');
-    }
-    public function editinstansi($id)
-    {
+       return redirect('/instansi')->with('success', 'Data berhasil disimpan.');
+   }
+   public function editinstansi($id)
+   {
         // Cari data berdasarkan ID
-        $instansi = Instansi::findOrFail($id);
+    $instansi = Instansi::findOrFail($id);
 
-        return view('instansi.editinstansi', ["key" => "instansi", "instansi" => $instansi]);
-    }
+    return view('instansi.editinstansi', ["key" => "instansi", "instansi" => $instansi]);
+}
 
-    public function edit(Request $request)
-    {
+public function edit(Request $request)
+{
         // Validasi input
-        $request->validate([
-            'kode_instansi' => 'required|string',
-            'nm_instansi' => 'required|string',
-            'total_mahasiswa' => 'required|integer',
-            'tgl_mulai_kerjasama' => 'required|date',
-            'tgl_akhir_kerjasama' => 'required|date',
-        ]);
+    $request->validate([
+        'kode_instansi' => 'required|string',
+        'nm_instansi' => 'required|string',
+        'total_mahasiswa' => 'required|integer',
+        'tgl_mulai_kerjasama' => 'required|date',
+        'tgl_akhir_kerjasama' => 'required|date',
+    ]);
 
         // Cari instansi berdasarkan ID
-        $instansi = Instansi::findOrFail($request->id);
+    $instansi = Instansi::findOrFail($request->id);
 
         // Update data instansi
-        $instansi->update([
-            'kode_instansi' => $request->kode_instansi,
-            'nm_instansi' => $request->nm_instansi,
-            'total_mahasiswa' => $request->total_mahasiswa,
-            'tgl_mulai_kerjasama' => $request->tgl_mulai_kerjasama,
-            'tgl_akhir_kerjasama' => $request->tgl_akhir_kerjasama,
-        ]);
+    $instansi->update([
+        'kode_instansi' => $request->kode_instansi,
+        'nm_instansi' => $request->nm_instansi,
+        'total_mahasiswa' => $request->total_mahasiswa,
+        'tgl_mulai_kerjasama' => $request->tgl_mulai_kerjasama,
+        'tgl_akhir_kerjasama' => $request->tgl_akhir_kerjasama,
+    ]);
 
         // Redirect dengan pesan sukses
-        return redirect('/instansi')->with('success', 'Data berhasil diperbarui.');
-    }
+    return redirect('/instansi')->with('success', 'Data berhasil diperbarui.');
+}
 
 
-    public function delete($id)
-    {
+public function delete($id)
+{
         // Cari instansi berdasarkan ID
-        $instansi = Instansi::findOrFail($id);
+    $instansi = Instansi::findOrFail($id);
 
         // Hapus data instansi
-        $instansi->delete();
+    $instansi->delete();
 
         // Redirect dengan pesan sukses
-        return redirect('/instansi')->with('success', 'Data berhasil dihapus.');
-    }
+    return redirect('/instansi')->with('success', 'Data berhasil dihapus.');
+}
 
-    public function daftarVA(Request $request)
-    {
+public function daftarVA(Request $request)
+{
         // Query dasar untuk Instansi
-        $query = Instansi::query();
+    $query = Instansi::query();
 
         // Filter berdasarkan nama instansi
-        if ($request->filled('nama_instansi')) {
-            $query->where('nm_instansi', 'like', '%' . $request->nama_instansi . '%');
-        }
-
-        // Eksekusi query dengan pagination
-        $instansi = $query->paginate(10);
-        return view('va.daftarva', compact('instansi'));
+    if ($request->filled('nama_instansi')) {
+        $query->where('nm_instansi', 'like', '%' . $request->nama_instansi . '%');
     }
 
+        // Eksekusi query dengan pagination
+    $instansi = $query->paginate(10);
+    return view('va.daftarva', compact('instansi'));
+    }
+  
     public function daftarpembayaran(Request $request)
     {
         $query = Tagihan::with('detailTagihan');
+      
+  public function daftarpembayaran(Request $request)
+  {
+      $query = Tagihan::query();
 
-        // Filter berdasarkan nama instansi
-        if ($request->filled('id_mahasiswa')) {
-            $query->where('id_mahasiswa', 'like', '%' . $request->id_mahasiswa . '%');
-        }
+          // Filter berdasarkan nama instansi
+      if ($request->filled('id_mahasiswa')) {
+          $query->where('id_mahasiswa', 'like', '%' . $request->id_mahasiswa . '%');
+      }
 
-        // Pagination (10 data per halaman)
-        $tagihan = $query->paginate(10);
+          // Pagination (10 data per halaman)
+      $tagihan = $query->paginate(10);
 
-        return view('pembayaran.daftarpembayaran', compact('tagihan'));
-    }
+      return view('pembayaran.daftarpembayaran', compact('tagihan'));
+  }
 
-    public function formtambahpembayaran()
-    {
-        return view('pembayaran.tambahpembayaran');
-    }
+  public function formtambahpembayaran()
+  {
+      return view('pembayaran.tambahpembayaran');
+  }
 
-    public function storepembayaran(Request $request)
-    {
-        $request->validate([
-            'id_mahasiswa' => 'required|string',
-            'periode' => 'required|string',
-            'sks' => 'required|integer',
-            'ice' => 'required|string',
-            'potongan_prestasi' => 'required|string',
-            'denda' => 'required|string',
-            'tgl_jth_tempo' => 'required|date',
-            'deskripsi' => 'nullable|string',
-        ]);
+      public function storepembayaran(Request $request)
+      {
+          $request->validate([
+              'id_mahasiswa' => 'required|string',
+              'periode' => 'required|string',
+              'sks' => 'required|integer',
+              'ice' => 'required|string',
+              'potongan_prestasi' => 'required|string',
+              'denda' => 'required|string',
+              'tgl_jth_tempo' => 'required|date',
+              'deskripsi' => 'nullable|string',
+          ]);
 
-        // Default nilai
-        $idInstansi = 12345;
-        $idDtlTagihan = 1;
+          // Default nilai
+          $idInstansi = 12345;
+          $idDtlTagihan = 1;
 
-        // Ambil data detail_tagihan
-        $detailTagihan = DetailTagihan::findOrFail($idDtlTagihan);
+          // Ambil data detail_tagihan
+          $detailTagihan = DetailTagihan::findOrFail($idDtlTagihan);
 
-        // Kalkulasi jumlah tagihan
-        $biayaSks = $detailTagihan->biaya_sks * $request->sks;
-        $biayaIce = $request->ice === 'Mengambil' ? $detailTagihan->biaya_ICE : 0;
-        $totalPotongan = $request->potongan_prestasi === 'Iya' ? $detailTagihan->potongan_prestasi : 0;
-        $totalDenda = $request->denda === 'Iya' ? $detailTagihan->hrg_denda : 0;
+          // Kalkulasi jumlah tagihan
+          $biayaSks = $detailTagihan->biaya_sks * $request->sks;
+          $biayaIce = $request->ice === 'Mengambil' ? $detailTagihan->biaya_ICE : 0;
+          $totalPotongan = $request->potongan_prestasi === 'Iya' ? $detailTagihan->potongan_prestasi : 0;
+          $totalDenda = $request->denda === 'Iya' ? $detailTagihan->hrg_denda : 0;
 
-        $jumlahTagihan =
-            $biayaSks +
-            $biayaIce +
-            $detailTagihan->biaya_kesehatan +
-            $detailTagihan->biaya_gedung -
-            $totalPotongan +
-            $totalDenda;
+          $jumlahTagihan =
+              $biayaSks +
+              $biayaIce +
+              $detailTagihan->biaya_kesehatan +
+              $detailTagihan->biaya_gedung -
+              $totalPotongan +
+              $totalDenda;
 
-        // Simpan data tagihan
-        Tagihan::create([
-            'id_instansi' => $idInstansi,
-            'id_dtl_tagihan' => $idDtlTagihan,
-            'id_mahasiswa' => $request->id_mahasiswa,
-            'periode' => $request->periode,
-            'sks' => $request->sks,
-            'ice' => $request->ice,
-            'potongan_prestasi' => $request->potongan_prestasi,
-            'denda' => $request->denda,
-            'jmlh_tgh' => $jumlahTagihan,
-            'tgl_jth_tempo' => $request->tgl_jth_tempo,
-            'deskripsi' => $request->deskripsi,
-        ]);
+          // Simpan data tagihan
+          Tagihan::create([
+              'id_instansi' => $idInstansi,
+              'id_dtl_tagihan' => $idDtlTagihan,
+              'id_mahasiswa' => $request->id_mahasiswa,
+              'periode' => $request->periode,
+              'sks' => $request->sks,
+              'ice' => $request->ice,
+              'potongan_prestasi' => $request->potongan_prestasi,
+              'denda' => $request->denda,
+              'jmlh_tgh' => $jumlahTagihan,
+              'tgl_jth_tempo' => $request->tgl_jth_tempo,
+              'deskripsi' => $request->deskripsi,
+          ]);
 
-        return redirect('/pembayaran')->with('success', 'Data pembayaran berhasil disimpan.');
-    }
+          return redirect('/pembayaran')->with('success', 'Data pembayaran berhasil disimpan.');
+      }
 
     public function getDetailTagihan(Request $request)
     {
         $request->validate([
             'id_dtl_tagihan' => 'required|integer|exists:detail_tagihan,id',
         ]);
+      
+public function storepembayaran(Request $request)
+{
+    $request->validate([
+        'id_instansi' => 'required|integer',
+        'id_dtl_tagihan' => 'required|integer',
+        'id_mahasiswa' => 'required|string',
+        'periode' => 'required|string',
+        'sks' => 'required|integer',
+        'ice' => 'required|string',
+        'potongan_prestasi' => 'required|string',
+        'denda' => 'required|string',
+        'tgl_jth_tempo' => 'required|date',
+        'deskripsi' => 'nullable|string',
+    ]);
 
-        $detailTagihan = DetailTagihan::find($request->id_dtl_tagihan);
+        // Ambil data detail_tagihan
+    $detailTagihan = DetailTagihan::where('id_dtl_tagihan', $request->id_dtl_tagihan)->first();
 
-        if ($detailTagihan) {
-            return response()->json([
-                'success' => true,
-                'data' => $detailTagihan
-            ]);
-        }
+    if (!$detailTagihan) {
+        return back()->withErrors(['id_dtl_tagihan' => 'Detail tagihan tidak ditemukan.']);
+    }
 
+        // Perhitungan jumlah tagihan
+    $biayaSks = $detailTagihan->biaya_sks * $request->sks;
+    $biayaIce = $request->ice === 'Mengambil' ? $detailTagihan->biaya_ICE : 0;
+    $totalPotongan = $request->potongan_prestasi === 'Iya' ? $detailTagihan->potongan_prestasi : 0;
+    $totalDenda = $request->denda === 'Iya' ? $detailTagihan->hrg_denda : 0;
+
+    $jumlahTagihan =
+    $biayaSks +
+    $biayaIce +
+    $detailTagihan->biaya_kesehatan +
+    $detailTagihan->biaya_gedung -
+    $totalPotongan +
+    $totalDenda;
+
+        // Simpan data tagihan ke database
+    Tagihan::create([
+        'id_instansi' => $request->id_instansi,
+        'id_dtl_tagihan' => $request->id_dtl_tagihan,
+        'id_mahasiswa' => $request->id_mahasiswa,
+        'periode' => $request->periode,
+        'sks' => $request->sks,
+        'ice' => $request->ice,
+        'potongan_prestasi' => $request->potongan_prestasi,
+        'denda' => $request->denda,
+        'jmlh_tgh' => $jumlahTagihan,
+        'tgl_jth_tempo' => $request->tgl_jth_tempo,
+        'deskripsi' => $request->deskripsi,
+    ]);
+
+    return redirect('/pembayaran')->with('success', 'Data pembayaran berhasil disimpan.');
+}
+
+
+public function getDetailTagihan(Request $request)
+{
+    $request->validate([
+        'id_dtl_tagihan' => 'required|integer|exists:detail_tagihan,id',
+    ]);
+
+    $detailTagihan = DetailTagihan::find($request->id_dtl_tagihan);
+
+    if ($detailTagihan) {
         return response()->json([
-            'success' => false,
-            'message' => 'Detail Tagihan tidak ditemukan.'
+            'success' => true,
+            'data' => $detailTagihan
         ]);
     }
 
-    public function formeditpembayaran($id)
-    {
-        $tagihan = Tagihan::where('id_tagihan', $id)->firstOrFail();
-        return view('pembayaran.editpembayaran', compact('tagihan'));
-    }
+    return response()->json([
+        'success' => false,
+        'message' => 'Detail Tagihan tidak ditemukan.'
+    ]);
+}
+
+public function formeditpembayaran($id)
+{
+    $tagihan = Tagihan::where('id_tagihan', $id)->firstOrFail();
+    return view('pembayaran.editpembayaran', compact('tagihan'));
+}
 
 
-    public function editpembayaran(Request $request, $id_tagihan)
-    {
+public function editpembayaran(Request $request, $id_tagihan)
+{
         $tagihan = Tagihan::findOrFail($id_tagihan); // Cari tagihan berdasarkan id_tagihan
 
         // Ambil detail tagihan dengan kolom yang benar
@@ -316,22 +381,26 @@ class PageController extends Controller
         return view('va.detailva', compact('tagihan'));
     }
 
+
 public function generateVa($id)
 {
+
+    public function generateVa($id)
+    {
     // Cari data tagihan berdasarkan ID
-    $tagihan = Tagihan::findOrFail($id);
+        $tagihan = Tagihan::findOrFail($id);
 
     // Cek jika status_transaksi sudah "Sudah Bayar"
-    if ($tagihan->status_transaksi == 'Sudah Bayar') {
-        return redirect()->back()->with('error', 'Tagihan sudah dibayar, tidak dapat di-generate ulang.');
-    }
+        if ($tagihan->status_transaksi == 'Sudah Bayar') {
+            return redirect()->back()->with('error', 'Tagihan sudah dibayar, tidak dapat di-generate ulang.');
+        }
 
     // Ambil data instansi dan mahasiswa
-    $instansiId = $tagihan->id_instansi;
-    $mahasiswaId = $tagihan->id_mahasiswa;
+        $instansiId = $tagihan->id_instansi;
+        $mahasiswaId = $tagihan->id_mahasiswa;
 
     // Format VA: ID_INSTANSI-ID_MAHASISWA
-    $noVa = $instansiId . $mahasiswaId;
+        $noVa = $instansiId . $mahasiswaId;
 
     // Cari apakah VA sudah ada
     $existingVa = Va::where('no_va', $noVa)->first();
@@ -343,138 +412,144 @@ public function generateVa($id)
             'status_va' => 'Aktif', // Pastikan status VA tetap aktif
         ]);
     } else {
-        // Jika VA belum ada, buat VA baru
-        Va::create([
-            'no_va' => $noVa,
-            'id_mahasiswa' => $mahasiswaId,
-            'id_tagihan' => $tagihan->id_tagihan,
-            'status_va' => 'Aktif', // Set status VA menjadi Aktif
+            // Jika VA belum ada, buat VA baru
+            // Buat data VA baru
+            Va::create([
+                'no_va' => $noVa,
+                'id_mahasiswa' => $mahasiswaId,
+                'id_tagihan' => $tagihan->id_tagihan,
+
+                'status_va' => 'Aktif', // Set status VA menjadi Aktif
+            ]);
+          }
+
+        'status_va' => 'Aktif', // Set status VA menjadi Aktif
         ]);
-    }
 
-    // Update no_va dan status_transaksi pada tagihan
-    $tagihan->update([
-        'no_va' => $noVa,
-        'status_transaksi' => 'Menunggu Pembayaran', // Tetap menunggu pembayaran
-    ]);
 
-    return redirect()->back()->with('success', 'Nomor VA berhasil digenerate.');
-}
+        // Update no_va dan status_transaksi pada tagihan
+            $tagihan->update([
+                'no_va' => $noVa,
+            'status_transaksi' => 'Menunggu Pembayaran', // Tetap menunggu pembayaran
+        ]);
 
-public function daftarTransaksi()
-{
+            return redirect()->back()->with('success', 'Nomor VA berhasil digenerate.');
+        }
+
+    public function daftarTransaksi()
+    {
     // Ambil data transaksi beserta tagihan dan mahasiswa, kecuali yang statusnya 'Gagal'
-    $transaksi = Transaksi::with(['tagihan.mahasiswa'])
+        $transaksi = Transaksi::with(['tagihan.mahasiswa'])
         ->where('status', '!=', 'Gagal')  // Exclude transactions with status 'Gagal'
         ->get();
 
     // Perbarui status berdasarkan kondisi
-    foreach ($transaksi as $data) {
-        if ($data->jmlh_bayar == $data->tagihan->jmlh_tgh) {
-            $data->update(['status' => 'Sudah Bayar']);
-            $data->tagihan->update(['status_transaksi' => 'Sudah Bayar']);
-        } elseif ($data->jmlh_bayar != $data->tagihan->jmlh_tgh) {
-            $data->update(['status' => 'Gagal']);
-            $data->tagihan->update(['status_transaksi' => 'Gagal']);
+        foreach ($transaksi as $data) {
+            if ($data->jmlh_bayar == $data->tagihan->jmlh_tgh) {
+                $data->update(['status' => 'Sudah Bayar']);
+                $data->tagihan->update(['status_transaksi' => 'Sudah Bayar']);
+            } elseif ($data->jmlh_bayar != $data->tagihan->jmlh_tgh) {
+                $data->update(['status' => 'Gagal']);
+                $data->tagihan->update(['status_transaksi' => 'Gagal']);
+            }
         }
+
+        return view('transaksi.transaksi', ['transaksi' => $transaksi]);
     }
 
-    return view('transaksi.transaksi', ['transaksi' => $transaksi]);
-}
 
-
-public function verifikasiTransaksi(Request $request, $id)
-{
+    public function verifikasiTransaksi(Request $request, $id)
+    {
     // Cari transaksi berdasarkan ID
-    $transaksi = Transaksi::findOrFail($id);
+        $transaksi = Transaksi::findOrFail($id);
 
     // Perbarui status verifikasi menjadi 'Sudah Terverifikasi'
-    $transaksi->update([
-        'status_verifikasi' => 'Sudah Terverifikasi'
-    ]);
-
-    return redirect()->back()->with('success', 'Status transaksi berhasil diverifikasi.');
-}
-
-public function logtransaksi(Request $request)
-{
-    // Query dasar dengan relasi
-    $query = Transaksi::with(['tagihan.mahasiswa', 'tagihan.instansi']);
-
-    if ($request->filled('tanggal_dari') && $request->filled('tanggal_sampai')) {
-        $query->whereBetween('created_at', [
-            $request->tanggal_dari . ' 00:00:00',
-            $request->tanggal_sampai . ' 23:59:59',
+        $transaksi->update([
+            'status_verifikasi' => 'Sudah Terverifikasi'
         ]);
+
+        return redirect()->back()->with('success', 'Status transaksi berhasil diverifikasi.');
     }
+
+    public function logtransaksi(Request $request)
+    {
+    // Query dasar dengan relasi
+        $query = Transaksi::with(['tagihan.mahasiswa', 'tagihan.instansi']);
+
+        if ($request->filled('tanggal_dari') && $request->filled('tanggal_sampai')) {
+            $query->whereBetween('created_at', [
+                $request->tanggal_dari . ' 00:00:00',
+                $request->tanggal_sampai . ' 23:59:59',
+            ]);
+        }
 
 
     // Filter berdasarkan keyword di instansi atau mahasiswa
-    if ($request->filled('filter_keyword')) {
-        $keyword = $request->filter_keyword;
-        $query->whereHas('tagihan.instansi', function ($q) use ($keyword) {
-            $q->where('nm_instansi', 'like', '%' . $keyword . '%');
-        })->orWhereHas('tagihan.mahasiswa', function ($q) use ($keyword) {
-            $q->where('nm_mhs', 'like', '%' . $keyword . '%')
-              ->orWhere('id_mahasiswa', 'like', '%' . $keyword . '%');
-        });
-    }
+        if ($request->filled('filter_keyword')) {
+            $keyword = $request->filter_keyword;
+            $query->whereHas('tagihan.instansi', function ($q) use ($keyword) {
+                $q->where('nm_instansi', 'like', '%' . $keyword . '%');
+            })->orWhereHas('tagihan.mahasiswa', function ($q) use ($keyword) {
+                $q->where('nm_mhs', 'like', '%' . $keyword . '%')
+                ->orWhere('id_mahasiswa', 'like', '%' . $keyword . '%');
+            });
+        }
 
     // Ambil data dan transformasi
-    $transaksi = $query->get()->map(function ($item) {
-        return [
-            'no_va' => $item->tagihan->no_va,
-            'nama_mahasiswa' => $item->tagihan->mahasiswa->nm_mhs ?? '-',
-            'nama_instansi' => $item->tagihan->instansi->nm_instansi ?? '-',
-            'jenis_tagihan' => $item->tagihan->deskripsi ?? '-',
-            'tanggal_transaksi' => $item->created_at->format('d - m - Y'),
-            'total_bayar' => 'Rp. ' . number_format($item->jmlh_bayar, 0, ',', '.'),
-            'status_transaksi' => $item->status,
-        ];
-    });
+        $transaksi = $query->get()->map(function ($item) {
+            return [
+                'no_va' => $item->tagihan->no_va,
+                'nama_mahasiswa' => $item->tagihan->mahasiswa->nm_mhs ?? '-',
+                'nama_instansi' => $item->tagihan->instansi->nm_instansi ?? '-',
+                'jenis_tagihan' => $item->tagihan->deskripsi ?? '-',
+                'tanggal_transaksi' => $item->created_at->format('d - m - Y'),
+                'total_bayar' => 'Rp. ' . number_format($item->jmlh_bayar, 0, ',', '.'),
+                'status_transaksi' => $item->status,
+            ];
+        });
 
     // Kirim ke view
     return view('transaksi.logtransaksi', compact('transaksi'));
-}
+    }
 
-public function komponen_pembayaran(Request $request)
-{
-    $data = KomponenPembayaran::getKomponenPembayaran($request);
-    return view('komponen_pembayaran.index',compact('data'));
-}
-public function save_komponen_pembayaran(Request $request)
-{
-    $jumlah_komponen = preg_replace("/[^aZ0-9]/", "", $request->jumlah_komponen);
-    $data = New KomponenPembayaran();
-    $data -> kategori_komponen = $request->kategori_komponen;
-    $data -> deskripsi_komponen = $request->deskripsi_komponen;
-    $data -> jumlah_komponen = $jumlah_komponen;
-    $data -> save();
-    return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil ditambahkan !!']);
-}
-public function get_edit_komponen_pembayaran($id_komponen_pembayaran)
-{
-    $data = KomponenPembayaran::getEditKomponenPembayaran($id_komponen_pembayaran);
-    return response()->json($data);
-}
-public function update_komponen_pembayaran(Request $request)
-{
-    $jumlah_komponen = preg_replace("/[^aZ0-9]/", "", $request->jumlah_komponen);
-    $data = KomponenPembayaran::where('id_komponen_pembayaran',$request->id_komponen_pembayaran)->first();
-    $data -> kategori_komponen = $request->kategori_komponen;
-    $data -> deskripsi_komponen = $request->deskripsi_komponen;
-    $data -> jumlah_komponen = $jumlah_komponen;
-    $data -> save();
-    return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil diubah !!']);
-}
-public function hapus_komponen_pembayaran($id_komponen_pembayaran)
-{
-    $data = KomponenPembayaran::where('id_komponen_pembayaran',$id_komponen_pembayaran)->first();
-    $data -> delete();
-    return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil dihapus !!']);
-}
+    public function komponen_pembayaran(Request $request)
+    {
+        $data = KomponenPembayaran::getKomponenPembayaran($request);
+        return view('komponen_pembayaran.index',compact('data'));
+    }
+    public function save_komponen_pembayaran(Request $request)
+    {
+        $jumlah_komponen = preg_replace("/[^aZ0-9]/", "", $request->jumlah_komponen);
+        $data = New KomponenPembayaran();
+        $data -> kategori_komponen = $request->kategori_komponen;
+        $data -> deskripsi_komponen = $request->deskripsi_komponen;
+        $data -> jumlah_komponen = $jumlah_komponen;
+        $data -> save();
+        return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil ditambahkan !!']);
+    }
+    public function get_edit_komponen_pembayaran($id_komponen_pembayaran)
+    {
+        $data = KomponenPembayaran::getEditKomponenPembayaran($id_komponen_pembayaran);
+        return response()->json($data);
+    }
+    public function update_komponen_pembayaran(Request $request)
+    {
+        $jumlah_komponen = preg_replace("/[^aZ0-9]/", "", $request->jumlah_komponen);
+        $data = KomponenPembayaran::where('id_komponen_pembayaran',$request->id_komponen_pembayaran)->first();
+        $data -> kategori_komponen = $request->kategori_komponen;
+        $data -> deskripsi_komponen = $request->deskripsi_komponen;
+        $data -> jumlah_komponen = $jumlah_komponen;
+        $data -> save();
+        return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil diubah !!']);
+    }
+    public function hapus_komponen_pembayaran($id_komponen_pembayaran)
+    {
+        $data = KomponenPembayaran::where('id_komponen_pembayaran',$id_komponen_pembayaran)->first();
+        $data -> delete();
+        return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil dihapus !!']);
+    }
 
-public function update_profil(Request $request)
+    public function update_profil(Request $request)
     {
         $data = User::where('id',Auth::user()->id)->first();
         $data -> name = $request->name;
@@ -487,10 +562,62 @@ public function update_profil(Request $request)
         return response()->json(['status'=>'true', 'message'=>'Profil berhasil diperbarui !!']);
     }
 
+        return view('transaksi.logtransaksi', compact('transaksi'));
+    }
 
-
-
-
+    public function komponen_pembayaran(Request $request)
+    {
+        $data = KomponenPembayaran::getKomponenPembayaran($request);
+        return view('komponen_pembayaran.index',compact('data'));
+    }
+      
+    public function save_komponen_pembayaran(Request $request)
+    {
+        $jumlah_komponen = preg_replace("/[^aZ0-9]/", "", $request->jumlah_komponen);
+        $data = New KomponenPembayaran();
+        $data -> kategori_komponen = $request->kategori_komponen;
+        $data -> deskripsi_komponen = $request->deskripsi_komponen;
+        $data -> jumlah_komponen = $jumlah_komponen;
+        $data -> save();
+        return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil ditambahkan !!']);
+    }
+      
+    public function get_edit_komponen_pembayaran($id_komponen_pembayaran)
+    {
+        $data = KomponenPembayaran::getEditKomponenPembayaran($id_komponen_pembayaran);
+        return response()->json($data);
+    }
+      
+    public function update_komponen_pembayaran(Request $request)
+    {
+        $jumlah_komponen = preg_replace("/[^aZ0-9]/", "", $request->jumlah_komponen);
+        $data = KomponenPembayaran::where('id_komponen_pembayaran',$request->id_komponen_pembayaran)->first();
+        $data -> kategori_komponen = $request->kategori_komponen;
+        $data -> deskripsi_komponen = $request->deskripsi_komponen;
+        $data -> jumlah_komponen = $jumlah_komponen;
+        $data -> save();
+        return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil diubah !!']);
+    }
+      
+    public function hapus_komponen_pembayaran($id_komponen_pembayaran)
+    {
+        $data = KomponenPembayaran::where('id_komponen_pembayaran',$id_komponen_pembayaran)->first();
+        $data -> delete();
+        return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil dihapus !!']);
+    }
+      
+    public function update_profil(Request $request)
+    {
+        $data = User::where('id',Auth::user()->id)->first();
+        $data -> name = $request->name;
+        $data -> email = $request->email;
+        if ($request->password != '') {
+            $data -> password = hash::make($request->password);
+            $data -> password_check = $request->password;
+        }
+        $data -> save();
+        return response()->json(['status'=>'true', 'message'=>'Profil berhasil diperbarui !!']);
+    }
 }
 
 
