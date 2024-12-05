@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Instansi;
 use App\Tagihan;
@@ -9,6 +8,7 @@ use App\Va;
 use App\Mahasiswa;
 use App\DetailTagihan;
 use App\Transaksi;
+use App\KomponenPembayaran;
 
 class PageController extends Controller
 {
@@ -138,7 +138,7 @@ class PageController extends Controller
 
     public function daftarpembayaran(Request $request)
     {
-        $query = Tagihan::query();
+        $query = Tagihan::with('detailTagihan');
 
         // Filter berdasarkan nama instansi
         if ($request->filled('id_mahasiswa')) {
@@ -159,8 +159,6 @@ class PageController extends Controller
     public function storepembayaran(Request $request)
     {
         $request->validate([
-            'id_instansi' => 'required|integer',
-            'id_dtl_tagihan' => 'required|integer',
             'id_mahasiswa' => 'required|string',
             'periode' => 'required|string',
             'sks' => 'required|integer',
@@ -171,14 +169,14 @@ class PageController extends Controller
             'deskripsi' => 'nullable|string',
         ]);
 
+        // Default nilai
+        $idInstansi = 12345;
+        $idDtlTagihan = 1;
+
         // Ambil data detail_tagihan
-        $detailTagihan = DetailTagihan::where('id_dtl_tagihan', $request->id_dtl_tagihan)->first();
+        $detailTagihan = DetailTagihan::findOrFail($idDtlTagihan);
 
-        if (!$detailTagihan) {
-            return back()->withErrors(['id_dtl_tagihan' => 'Detail tagihan tidak ditemukan.']);
-        }
-
-        // Perhitungan jumlah tagihan
+        // Kalkulasi jumlah tagihan
         $biayaSks = $detailTagihan->biaya_sks * $request->sks;
         $biayaIce = $request->ice === 'Mengambil' ? $detailTagihan->biaya_ICE : 0;
         $totalPotongan = $request->potongan_prestasi === 'Iya' ? $detailTagihan->potongan_prestasi : 0;
@@ -192,10 +190,10 @@ class PageController extends Controller
             $totalPotongan +
             $totalDenda;
 
-        // Simpan data tagihan ke database
+        // Simpan data tagihan
         Tagihan::create([
-            'id_instansi' => $request->id_instansi,
-            'id_dtl_tagihan' => $request->id_dtl_tagihan,
+            'id_instansi' => $idInstansi,
+            'id_dtl_tagihan' => $idDtlTagihan,
             'id_mahasiswa' => $request->id_mahasiswa,
             'periode' => $request->periode,
             'sks' => $request->sks,
@@ -209,8 +207,6 @@ class PageController extends Controller
 
         return redirect('/pembayaran')->with('success', 'Data pembayaran berhasil disimpan.');
     }
-
-
 
     public function getDetailTagihan(Request $request)
     {
@@ -318,29 +314,7 @@ class PageController extends Controller
         return view('va.detailva', compact('tagihan'));
     }
 
-    // public function generateVa($id)
-    // {
-    // // Cari data tagihan berdasarkan ID
-    // $tagihan = Tagihan::findOrFail($id);
-
-    // // Cek jika status_transaksi sudah "Sudah Bayar"
-    // if ($tagihan->status_transaksi == 'Sudah Bayar') {
-    //     return redirect()->back()->with('error', 'Tagihan sudah dibayar, tidak dapat di-generate ulang.');
-    // }
-
-    // // Generate nomor VA baru
-    // $generatedVa = $tagihan->id_instansi . $tagihan->id_mahasiswa;
-
-    // // Update no_va dan status_transaksi pada tagihan
-    // $tagihan->update([
-    //     'no_va' => $generatedVa,
-    //     'status_transaksi' => 'Menunggu Pembayaran', // Tetap menunggu pembayaran
-    // ]);
-
-    // return redirect()->back()->with('success', 'Nomor VA berhasil digenerate.');
-    // }
-
-    public function generateVa($id)
+public function generateVa($id)
 {
     // Cari data tagihan berdasarkan ID
     $tagihan = Tagihan::findOrFail($id);
@@ -357,13 +331,24 @@ class PageController extends Controller
     // Format VA: ID_INSTANSI-ID_MAHASISWA
     $noVa = $instansiId . $mahasiswaId;
 
-    // Buat data VA baru
-    Va::create([
-        'no_va' => $noVa,
-        'id_mahasiswa' => $mahasiswaId,
-        'id_tagihan' => $tagihan->id_tagihan,
-        'status_va' => 'Aktif', // Set status VA menjadi Aktif
-    ]);
+    // Cari apakah VA sudah ada
+    $existingVa = Va::where('no_va', $noVa)->first();
+
+    if ($existingVa) {
+        // Update id_tagihan yang terkait dengan VA
+        $existingVa->update([
+            'id_tagihan' => $tagihan->id_tagihan,
+            'status_va' => 'Aktif', // Pastikan status VA tetap aktif
+        ]);
+    } else {
+        // Jika VA belum ada, buat VA baru
+        Va::create([
+            'no_va' => $noVa,
+            'id_mahasiswa' => $mahasiswaId,
+            'id_tagihan' => $tagihan->id_tagihan,
+            'status_va' => 'Aktif', // Set status VA menjadi Aktif
+        ]);
+    }
 
     // Update no_va dan status_transaksi pada tagihan
     $tagihan->update([
@@ -448,6 +433,43 @@ public function logtransaksi(Request $request)
 
     // Kirim ke view
     return view('transaksi.logtransaksi', compact('transaksi'));
+}
+
+public function komponen_pembayaran(Request $request)
+{
+    $data = KomponenPembayaran::getKomponenPembayaran($request);
+    return view('komponen_pembayaran.index',compact('data'));
+}
+public function save_komponen_pembayaran(Request $request)
+{
+    $jumlah_komponen = preg_replace("/[^aZ0-9]/", "", $request->jumlah_komponen);
+    $data = New KomponenPembayaran();
+    $data -> kategori_komponen = $request->kategori_komponen;
+    $data -> deskripsi_komponen = $request->deskripsi_komponen;
+    $data -> jumlah_komponen = $jumlah_komponen;
+    $data -> save();
+    return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil ditambahkan !!']);
+}
+public function get_edit_komponen_pembayaran($id_komponen_pembayaran)
+{
+    $data = KomponenPembayaran::getEditKomponenPembayaran($id_komponen_pembayaran);
+    return response()->json($data);
+}
+public function update_komponen_pembayaran(Request $request)
+{
+    $jumlah_komponen = preg_replace("/[^aZ0-9]/", "", $request->jumlah_komponen);
+    $data = KomponenPembayaran::where('id_komponen_pembayaran',$request->id_komponen_pembayaran)->first();
+    $data -> kategori_komponen = $request->kategori_komponen;
+    $data -> deskripsi_komponen = $request->deskripsi_komponen;
+    $data -> jumlah_komponen = $jumlah_komponen;
+    $data -> save();
+    return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil diubah !!']);
+}
+public function hapus_komponen_pembayaran($id_komponen_pembayaran)
+{
+    $data = KomponenPembayaran::where('id_komponen_pembayaran',$id_komponen_pembayaran)->first();
+    $data -> delete();
+    return response()->json(['status'=>'true', 'message'=>'Data Manajemen Pembayaran berhasil dihapus !!']);
 }
 
 

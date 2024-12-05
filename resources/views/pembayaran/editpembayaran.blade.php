@@ -7,18 +7,6 @@
         @csrf
         @method('PUT')
 
-        <!-- ID Instansi -->
-        <div class="form-group">
-            <label for="id_instansi">Kode Instansi</label>
-            <input type="text" name="id_instansi" id="id_instansi" class="form-control" value="{{ $tagihan->id_instansi }}" readonly>
-        </div>
-
-        <!-- ID Detail Tagihan -->
-        <div class="form-group">
-            <label for="id_dtl_tagihan">Detail Tagihan</label>
-            <input type="text" name="id_dtl_tagihan" id="id_dtl_tagihan" class="form-control" value="{{ $tagihan->id_dtl_tagihan }}" readonly>
-        </div>
-
         <!-- ID Mahasiswa -->
         <div class="form-group">
             <label for="id_mahasiswa">NIM</label>

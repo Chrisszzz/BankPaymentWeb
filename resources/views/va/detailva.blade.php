@@ -33,7 +33,7 @@
 
 @section('content')
     <div class="container mt-5">
-        <h2 class="text-center mb-4"><strong>Data Request VA</strong></h2>
+        <h2 class="text-center mb-4"><strong>Daftar Request VA</strong></h2>
         <p class="text-center"><strong>Universitas Kristen Duta Wacana</strong></p>
         <br>
 

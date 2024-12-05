@@ -8,35 +8,7 @@ use App\Va;
 
 class APIController extends Controller
 {
-    // public function detailva(Request $request)
-    // {
-    //     // Ambil data tagihan beserta relasi VA dan Mahasiswa
-    //     $tagihan = Tagihan::with(['va', 'mahasiswa'])->paginate(5);
 
-    //     // Periksa apakah no_va kosong, jika iya set status_transaksi menjadi null
-    //     foreach ($tagihan as $item) {
-    //         if (is_null($item->no_va)) {
-    //             $item->status_transaksi = null; // Kosongkan status_transaksi
-    //         }
-    //     }
-
-    //     // Periksa apakah data ditemukan
-    //     if ($tagihan->isEmpty()) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'data' => 'Data Tidak Ditemukan'
-    //         ], 200)->header('Access-Control-Allow-Origin', 'http://127.0.0.1:8000'); // Mengizinkan CORS
-    //     } else {
-    //         return response()->json([
-    //             'success' => true,
-    //             'data' => $tagihan
-    //         ], 200)->header('Access-Control-Allow-Origin', 'http://127.0.0.1:8000'); // Mengizinkan CORS
-    //     }
-    // }
-
-    /**
-     * Menampilkan semua data VA.
-     */
     public function listVa()
     {
         // Ambil semua data VA beserta relasi tagihan dan mahasiswa
@@ -83,7 +55,7 @@ class APIController extends Controller
     // GET: Menampilkan data tagihan
     public function getTagihan(Request $request)
     {
-        $query = Tagihan::query();
+        $query = Tagihan::with('detailTagihan');
 
         // Filter berdasarkan ID mahasiswa jika ada
         if ($request->filled('id_mahasiswa')) {
@@ -110,9 +82,7 @@ class APIController extends Controller
     public function createTagihan(Request $request)
     {
         $request->validate([
-            'id_instansi' => 'required|integer',
-            'id_dtl_tagihan' => 'required|integer',
-            'id_mahasiswa' => 'required|string',
+            'id_mahasiswa' => 'required|integer',
             'periode' => 'required|string',
             'sks' => 'required|integer',
             'ice' => 'required|string',
@@ -122,8 +92,12 @@ class APIController extends Controller
             'deskripsi' => 'nullable|string',
         ]);
 
+        // Default nilai
+        $idInstansi = 12345;
+        $idDtlTagihan = 1;
+
         // Ambil data detail_tagihan
-        $detailTagihan = DetailTagihan::where('id_dtl_tagihan', $request->id_dtl_tagihan)->first();
+        $detailTagihan = DetailTagihan::find($idDtlTagihan);
 
         if (!$detailTagihan) {
             return response()->json([
@@ -142,8 +116,8 @@ class APIController extends Controller
 
         // Simpan data tagihan ke database
         $tagihan = Tagihan::create([
-            'id_instansi' => $request->id_instansi,
-            'id_dtl_tagihan' => $request->id_dtl_tagihan,
+            'id_instansi' => $idInstansi,
+            'id_dtl_tagihan' => $idDtlTagihan,
             'id_mahasiswa' => $request->id_mahasiswa,
             'periode' => $request->periode,
             'sks' => $request->sks,
@@ -172,6 +146,8 @@ class APIController extends Controller
             'potongan_prestasi' => 'required|string',
             'denda' => 'required|string',
             'periode' => 'required|string',
+            'tgl_jth_tempo' => 'required|date',
+            'deskripsi' => 'nullable|string'
         ]);
 
         // Ambil data detail_tagihan untuk perhitungan baru
@@ -200,6 +176,8 @@ class APIController extends Controller
             'denda' => $request->denda,
             'periode' => $request->periode,
             'jmlh_tgh' => $jumlahTagihan,
+            'tgl_jth_tempo' => $request->tgl_jth_tempo,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return response()->json([
@@ -207,4 +185,29 @@ class APIController extends Controller
             'data' => $tagihan
         ], 200);
     }
+
+    // DELETE data tagihan
+    public function deleteTagihan($id_tagihan)
+    {
+        // Cari tagihan berdasarkan id_tagihan
+        $tagihan = Tagihan::find($id_tagihan);
+
+        if (!$tagihan) {
+            // Jika tagihan tidak ditemukan, kirim respons 404
+            return response()->json([
+                'success' => false,
+                'message' => 'Tagihan tidak ditemukan.'
+            ], 404);
+        }
+
+        // Hapus tagihan
+        $tagihan->delete();
+
+        // Kirim respons sukses setelah penghapusan
+        return response()->json([
+            'success' => true,
+            'message' => 'Tagihan berhasil dihapus.'
+        ], 200);
+    }
+
 }

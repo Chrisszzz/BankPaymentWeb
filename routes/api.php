@@ -6,13 +6,11 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-// Route::get('/va/details', 'APIController@detailva');
-
 Route::get('/va', 'APIController@listVa'); // GET: Menampilkan semua data VA
 Route::get('/va/{no_va}', 'APIController@detailVa'); // GET: Menampilkan detail data VA berdasarkan nomor VA
-
 Route::get('/tagihan', 'APIController@getTagihan');       // GET: Menampilkan data tagihan
 Route::post('/tagihan', 'APIController@createTagihan');   // POST: Membuat tagihan baru
 Route::put('/tagihan/{id}', 'APIController@updateTagihan'); // PUT: Mengupdate tagihan
+Route::delete("/tagihan/{id}", "APIController@deleteTagihan"); // DELETE: Delete tagihan
 
 

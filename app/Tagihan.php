@@ -30,6 +30,12 @@ class Tagihan extends Model
         return $this->belongsTo(DetailTagihan::class, 'id_dtl_tagihan', 'id_dtl_tagihan');
     }
 
+    protected $attributes = [
+        'id_dtl_tagihan' => 1,  // Nilai default
+        'id_instansi' => 12345, // Nilai default
+        'status_transaksi' => '', // Nilai default
+    ];
+
     // Relasi dengan model Va, satu tagihan memiliki satu VA
     public function va()
     {

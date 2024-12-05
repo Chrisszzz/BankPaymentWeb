@@ -31,6 +31,12 @@ Route::get("/logtransaksi", "PageController@logtransaksi")->name('logtransaksi')
 
 Route::get('/logtransaksi/exportpdf', 'PdfController@exportPdf')->name('logtransaksi.exportpdf');
 
+Route::get("/manajemen_pembayaran", "PageController@komponen_pembayaran")->name('index.komponen_pembayaran'); // Menampilkan komp pemb
+Route::post("/manajemen_pembayaran/save", "PageController@save_komponen_pembayaran")->name('save_komponen_pembayaran');
+Route::get("/manajemen_pembayaran/get_edit/{id_komponen_pembayaran}", "PageController@get_edit_komponen_pembayaran"); // Menampilkan komp pemb
+Route::post("/manajemen_pembayaran/update", "PageController@update_komponen_pembayaran")->name('update_komponen_pembayaran');
+Route::get("/manajemen_pembayaran/delete/{id_komponen_pembayaran}", "PageController@hapus_komponen_pembayaran");
+
 
 
 

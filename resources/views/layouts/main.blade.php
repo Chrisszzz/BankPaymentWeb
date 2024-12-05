@@ -9,7 +9,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
     <!-- Google font -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.0/dist/sweetalert2.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600&display=swap"
@@ -18,6 +23,63 @@
         body {
             font-family: "Inter", sans-serif;
             background-color: #f8f9fa;
+        }
+
+        .select2-hidden-accessible+.select2-container .select2-selection {
+            height: 36px;
+            padding-top: 2px;
+        }
+
+        .select2-hidden-accessible+.select2-container .select2-selection__arrow,
+        .select2-hidden-accessible+.select2-container .select2-selection_clear {
+            height: 40px;
+        }
+
+        select[readonly].select2-hidden-accessible+.select2-container {
+            pointer-events: none;
+            touch-action: none;
+        }
+
+        select[readonly].select2-hidden-accessible+.select2-container .select2-selection {
+            background: #e8ebed;
+            box-shadow: none;
+        }
+
+        select[readonly].select2-hidden-accessible+.select2-container .select2-selection__arrow,
+        select[readonly].select2-hidden-accessible+.select2-container .select2-selection_clear {
+            display: none;
+        }
+
+        .is-invalid:valid+.select2 .select2-selection {
+            border-color: #dc3545 !important;
+        }
+
+        *:focus {
+            outline: 0px;
+        }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: 9999;
+            text-align: center;
+        }
+
+        @media (min-width: 801px) {
+            #loading {
+                padding-top: 20%;
+            }
+        }
+
+        @media (max-width: 800px) {
+            #loading {
+                padding-top: 80%;
+            }
         }
 
         .sidebar {
@@ -97,9 +159,9 @@
             /* Efek bayangan */
         }
 
-            /* Styling untuk card */
+        /* Styling untuk card */
         .card-header {
-        background-color: #3F51B5;
+            background-color: #3F51B5;
         }
     </style>
 </head>
@@ -127,8 +189,13 @@
                     class="d-block py-2 text-white {{ request()->is('transaksi') ? 'bg-primary' : '' }}">
                     <i class="bi bi-building"></i> Data Transaksi
                 </a>
-                <a href="/logtransaksi" class="d-block py-2 text-white {{ request()->is('reports') ? 'bg-primary' : '' }}">
+                <a href="/logtransaksi"
+                    class="d-block py-2 text-white {{ request()->is('reports') ? 'bg-primary' : '' }}">
                     <i class="bi bi-file-bar-graph"></i> Log Transaksi
+                </a>
+                <a href=" {{ route('index.komponen_pembayaran') }} "
+                    class="d-block py-2 text-white {{ request()->is('manajemen_pembayaran') ? 'bg-primary' : '' }}">
+                    <i class="bi bi-building"></i> Manajemen Pembayaran
                 </a>
             </div>
 
@@ -156,8 +223,15 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
 </body>
+@yield('scripts')
 
 </html>

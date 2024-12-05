@@ -16,9 +16,33 @@
         align-items: center;
         background-color: #f4f4f4;
         font-family: Arial, sans-serif;
+        flex-direction: column; /* Atur kolom untuk alert dan card */
+    }
+    .alert-container {
+        width: 100%;
+        max-width: 900px;
+        margin-bottom: 20px;
+        z-index: 1000;
+        animation: fadeIn 0.5s ease-in-out; /* Animasi masuk */
+    }
+    .alert {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #842029;
+        border: 1px solid #f5c2c7;
+    }
+    .alert-icon {
+        margin-right: 10px;
+        font-size: 24px;
     }
     .card {
-        width: 900px; /* Perbesar ukuran card */
+        width: 900px;
         max-width: 100%;
         display: flex;
         flex-direction: row;
@@ -34,49 +58,73 @@
     }
     .card-form {
         flex: 1;
-        padding: 40px; /* Tambahkan padding agar lebih nyaman */
+        padding: 40px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         background-color: #ffffff;
     }
     .card-form img {
-        margin-bottom: 30px; /* Tambahkan jarak antara logo dan form */
+        margin-bottom: 30px;
         display: block;
         margin-left: auto;
         margin-right: auto;
     }
-    .form-group label {
-        font-size: 16px; /* Perbesar ukuran font label */
-        font-weight: bold;
+    .form-group {
+        position: relative;
     }
     .form-control {
-        height: 50px; /* Sedikit perbesar input */
+        height: 50px;
         border-radius: 5px;
         font-size: 15px;
+        padding-right: 40px; /* Ruang untuk ikon mata */
     }
     .btn {
         background-color: #3F51B5;
         color: white;
-        height: 50px; /* Perbesar tombol */
+        height: 50px;
         width: 100%;
         border-radius: 10px;
-        font-size: 18px; /* Perbesar teks tombol */
+        font-size: 18px;
         font-weight: bold;
         transition: background-color 0.3s ease;
     }
     .btn:hover {
         background-color: #303F9F;
     }
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #999;
+        font-size: 22px;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
   </style>
 </head>
 <body>
+  <!-- Bagian Alert -->
   @if ($errors->has('login_error'))
-  <div class="alert alert-danger text-center" style="margin-bottom: 20px;">
+  <div class="alert-container">
+    <div class="alert alert-danger">
+      <span class="alert-icon glyphicon glyphicon-exclamation-sign"></span>
       {{ $errors->first('login_error') }}
+    </div>
   </div>
   @endif
 
+  <!-- Bagian Card -->
   <div class="card">
     <!-- Bagian Gambar -->
     <div class="card-image"></div>
@@ -88,11 +136,13 @@
         @csrf
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" class="form-control" id="username" placeholder="Masukkan username" name="username">
+          <input type="text" class="form-control" id="username" placeholder="Masukkan username" name="username" value="{{ old('username') }}">
         </div>
         <div class="form-group">
           <label for="password">Password</label>
           <input type="password" class="form-control" id="password" placeholder="Masukkan password" name="password">
+          <br>
+          <span class="toggle-password glyphicon glyphicon-eye-open" onclick="togglePasswordVisibility()"></span>
         </div>
         <button type="submit" class="btn">
           Login
@@ -100,5 +150,21 @@
       </form>
     </div>
   </div>
+
+  <script>
+    function togglePasswordVisibility() {
+      const passwordField = document.getElementById('password');
+      const toggleIcon = document.querySelector('.toggle-password');
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('glyphicon-eye-open');
+        toggleIcon.classList.add('glyphicon-eye-close');
+      } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('glyphicon-eye-close');
+        toggleIcon.classList.add('glyphicon-eye-open');
+      }
+    }
+  </script>
 </body>
 </html>
