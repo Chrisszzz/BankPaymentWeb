@@ -62,7 +62,7 @@ http://localhost:8000.
 - Pengelolaan virtual account.
 - Pembayaran tagihan secara otomatis.
 
-###Teknologi
+### Teknologi
 - Laravel 6
 - MySQL
 - Bootstrap 4
