@@ -89,10 +89,7 @@ php artisan serve
 Setelah server berjalan, buka browser Anda dan akses proyek di:
 http://localhost:8000.
 
-### Fitur
-- Login dan autentikasi pengguna.
-- Pengelolaan virtual account.
-- Pembayaran tagihan secara otomatis.
+---
 
 ### Teknologi
 - Laravel 6
