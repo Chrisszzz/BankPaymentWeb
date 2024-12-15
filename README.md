@@ -34,7 +34,10 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan proyek ini di lingkungan lo
 Pastikan file .env tersedia di direktori root proyek. Jika tidak ada, salin file .env.example menjadi .env:
 
 jalankan di terminal perintah dibawah ini :
+
+```bash
 cp .env.example .env
+
 Edit file .env menggunakan editor teks dan sesuaikan pengaturan database Anda:
 
 plaintext
