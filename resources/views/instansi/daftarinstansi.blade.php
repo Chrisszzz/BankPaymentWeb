@@ -66,99 +66,132 @@
             <a href="/instansi/create" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i> Tambah Data
             </a>
-
-            <!-- Form Filter -->
-            <form action="{{ url('/instansi') }}" method="GET">
-                <input type="text" name="nama_instansi" class="form-control" placeholder="Cari Nama Instansi"
-                    value="{{ request('nama_instansi') }}">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i> Filter
-                </button>
-                <a href="{{ url('/instansi') }}" class="btn btn-secondary">Reset</a>
-            </form>
         </div>
 
         @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: '{{ session('success') }}',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            </script>
         @endif
 
-        <!-- Tabel Data -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Kode Universitas</th>
-                    <th>Nama Universitas</th>
-                    <th>Total Mahasiswa</th>
-                    <th>Tanggal Mulai</th>
-                    <th>Tanggal Berakhir</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($instansi as $key => $data)
-                    <tr>
-                        <td>{{ $instansi->firstItem() + $key }}</td>
-                        <td>{{ $data->kode_instansi }}</td>
-                        <td>{{ $data->nm_instansi }}</td>
-                        <td>{{ $data->total_mahasiswa }}</td>
-                        <td>{{ $data->tgl_mulai_kerjasama }}</td>
-                        <td>{{ $data->tgl_akhir_kerjasama }}</td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                <a href="/instansi/edit/{{ $data->id }}"
-                                    class="btn btn-success d-flex align-items-center justify-content-center"
-                                    style="width: 40px; height: 40px;">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </a>
-                                <form action="/instansi/delete/{{ $data->id }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="btn btn-danger d-flex align-items-center justify-content-center"
-                                        style="width: 40px; height: 40px;">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center">Tidak ada data ditemukan.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-
-        <!-- Custom Pagination -->
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <nav aria-label="Pagination" class="mx-auto">
-                <ul class="pagination">
-                    <!-- Tombol Previous -->
-                    <li class="page-item {{ $instansi->onFirstPage() ? 'disabled' : '' }}">
-                        <a class="page-link" href="{{ $instansi->previousPageUrl() }}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-
-                    <!-- Tombol Halaman -->
-                    @foreach ($instansi->getUrlRange(max(1, $instansi->currentPage() - 2), min($instansi->lastPage(), $instansi->currentPage() + 2)) as $page => $url)
-                        <li class="page-item {{ $instansi->currentPage() == $page ? 'active' : '' }}">
-                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                        </li>
-                    @endforeach
-
-                    <!-- Tombol Next -->
-                    <li class="page-item {{ !$instansi->hasMorePages() ? 'disabled' : '' }}">
-                        <a class="page-link" href="{{ $instansi->nextPageUrl() }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <!-- Card Container -->
+        <div class="card">
+            <div class="card-body">
+                <!-- Tabel Data -->
+                <table id="dataTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Kode Universitas</th>
+                            <th>Nama Universitas</th>
+                            <th>Total Mahasiswa</th>
+                            <th>Tanggal Mulai</th>
+                            <th>Tanggal Berakhir</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($instansi as $key => $data)
+                            <tr>
+                                <td>{{ $instansi->firstItem() + $key }}</td>
+                                <td>{{ $data->kode_instansi }}</td>
+                                <td>{{ $data->nm_instansi }}</td>
+                                <td>{{ $data->total_mahasiswa }}</td>
+                                <td>{{ $data->tgl_mulai_kerjasama }}</td>
+                                <td>{{ $data->tgl_akhir_kerjasama }}</td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a href="/instansi/edit/{{ $data->id }}"
+                                            class="btn btn-success d-flex align-items-center justify-content-center"
+                                            style="width: 40px; height: 40px;">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger delete" data-id="{{ $data->id }}"
+                                            style="width: 40px; height: 40px;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">Tidak ada data ditemukan.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+
+    <!-- Tambahkan referensi DataTables dan SweetAlert -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "info": true,
+                "ordering": true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json"
+                }
+            });
+
+            $(document).on('click', '.delete', function(event) {
+                const id = $(this).data('id');
+                event.preventDefault();
+
+                Swal.fire({
+                    title: 'Lanjut Hapus Data?',
+                    text: 'Data ini akan dihapus secara permanen!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#DD6B55',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Hapus',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/instansi/delete/${id}`,
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil dihapus.'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: 'Terjadi kesalahan, coba lagi nanti.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

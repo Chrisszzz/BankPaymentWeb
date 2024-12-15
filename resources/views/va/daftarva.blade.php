@@ -19,92 +19,93 @@
         background-color: #3F51B5;
         border: none;
     }
-
-    .search-bar-container {
-        display: flex;
-        justify-content: flex-end; /* Menempatkan form di sebelah kanan */
-        margin-bottom: 20px;
-    }
-
-    .form-control {
-        max-width: 300px; /* Membatasi lebar search bar */
-    }
 </style>
 
 @section('content')
 <div class="container mt-5">
     <h2 class="text-center mb-4"><strong>Data VA</strong></h2>
 
-    <!-- Form Filter -->
-    <div class="search-bar-container">
-        <form action="{{ url('/va') }}" method="GET" class="d-flex align-items-center">
-            <input type="text" name="nama_instansi" class="form-control me-2" placeholder="Cari Nama Instansi" value="{{ request('nama_instansi') }}">
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a href="{{ url('/va') }}" class="btn btn-secondary ms-2">Reset</a>
-        </form>
-    </div>
-
-    <!-- Table Data -->
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Kode Universitas</th>
-                <th>Nama Universitas</th>
-                <th>Jenis Layanan</th>
-                <th>Total Mahasiswa</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($instansi as $index => $item)
-            <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $item->kode_instansi }}</td>
-                <td>{{ $item->nm_instansi }}</td>
-                <td>Pembayaran</td>
-                <td>{{ $item->total_mahasiswa }}</td>
-                <td>
-                    <center><a href="va/detailva" class="btn btn-primary btn-sm">Lihat Detail</a></center>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="6" class="text-center">Tidak ada data ditemukan.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <div class="d-flex justify-content-between align-items-center mt-3">
-        <!-- Pagination Custom -->
-        <nav aria-label="Pagination" class="mx-auto">
-            <ul class="pagination">
-                <!-- Tombol Previous -->
-                <li class="page-item {{ $instansi->onFirstPage() ? 'disabled' : '' }}">
-                    <a class="page-link" href="{{ $instansi->previousPageUrl() }}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-
-                <!-- Tombol Halaman -->
-                @foreach ($instansi->getUrlRange(
-                    max(1, $instansi->currentPage() - 2),
-                    min($instansi->lastPage(), $instansi->currentPage() + 2)
-                ) as $page => $url)
-                    <li class="page-item {{ $instansi->currentPage() == $page ? 'active' : '' }}">
-                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                    </li>
-                @endforeach
-
-                <!-- Tombol Next -->
-                <li class="page-item {{ !$instansi->hasMorePages() ? 'disabled' : '' }}">
-                    <a class="page-link" href="{{ $instansi->nextPageUrl() }}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <!-- Card Wrapper -->
+    <div class="card">
+        <div class="card-body">
+            <!-- Table Data -->
+            <table class="table table-striped" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode Universitas</th>
+                        <th>Nama Universitas</th>
+                        <th>Jenis Layanan</th>
+                        <th>Total Mahasiswa</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($instansi as $index => $item)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $item->kode_instansi }}</td>
+                        <td>{{ $item->nm_instansi }}</td>
+                        <td>Pembayaran</td>
+                        <td>{{ $item->total_mahasiswa }}</td>
+                        <td>
+                            <center>
+                                @if ($item->nm_instansi == 'Universitas Kristen Duta Wacana')
+                                    <a href="{{ url('va/detailva') }}" class="btn btn-primary btn-sm">Lihat Detail</a>
+                                @else
+                                    <button class="btn btn-primary btn-sm lihat-detail" data-nama="{{ $item->nm_instansi }}">
+                                        Lihat Detail
+                                    </button>
+                                @endif
+                            </center>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="text-center">Tidak ada data ditemukan.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<!-- Include DataTables JS and CSS -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function() {
+        // DataTable Initialization
+        $('#dataTable').DataTable({
+            "language": {
+                "search": "Search:",
+                "lengthMenu": "Tampilkan _MENU_ entri",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                "paginate": {
+                    "first": "Awal",
+                    "last": "Akhir",
+                    "next": "Next",
+                    "previous": "Previous"
+                },
+                "emptyTable": "Tidak ada data tersedia"
+            }
+        });
+
+        // Button Lihat Detail jika bukan Universitas Kristen Duta Wacana
+        $('.lihat-detail').on('click', function() {
+            const namaUniversitas = $(this).data('nama');
+            Swal.fire({
+                title: 'Informasi',
+                text: `Data kosong untuk ${namaUniversitas}`,
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
+</script>
 @endsection

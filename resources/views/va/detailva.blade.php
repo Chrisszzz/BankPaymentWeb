@@ -6,7 +6,6 @@
         font-size: 14px;
     }
 
-    /* Menjadikan header tabel berwarna putih biasa */
     table th {
         background-color: white;
         color: black;
@@ -25,9 +24,10 @@
         padding: 15px;
     }
 
-    /* Styling untuk card */
     .card-header {
         color: white;
+        background-color: #3F51B5;
+
     }
 </style>
 
@@ -37,14 +37,13 @@
         <p class="text-center"><strong>Universitas Kristen Duta Wacana</strong></p>
         <br>
 
-        <!-- Card untuk tabel -->
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">Daftar Data VA</h5>
+                <h5 class="mb-0">Daftar Data VA</h5>
             </div>
             <div class="card-body">
-                <!-- Tabel Data -->
-                <table class="table table-striped text-center">
+                <div class="table-responsive" style="overflow-x: auto; max-width: 100%;">
+                    <table class="table table-striped text-center" id="dataTable">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -62,7 +61,7 @@
                     <tbody>
                         @foreach ($tagihan as $item)
                             <tr>
-                                <td>{{ $loop->iteration }}</td> <!-- Menampilkan nomor urut dimulai dari 1 -->
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->id_instansi }}</td>
                                 <td>{{ $item->id_mahasiswa }}</td>
                                 <td>{{ $item->mahasiswa->nm_mhs ?? 'Nama tidak ditemukan' }}</td>
@@ -83,11 +82,7 @@
                                 </td>
                                 <td>
                                     @if (is_null($item->no_va))
-                                        <!-- Jika no_va kosong, tampilkan tombol generate -->
-                                        <form action="{{ route('va.generate', $item->id_tagihan) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-primary btn-sm">Proses</button>
-                                        </form>
+                                        <button class="btn btn-primary btn-sm process" data-id="{{ $item->id_tagihan }}">Proses</button>
                                     @else
                                         <span class="text-success">Berhasil Digenerate</span>
                                     @endif
@@ -98,10 +93,75 @@
                     </tbody>
                 </table>
             </div>
-
-        </div>
-        <div class="d-flex justify-content-center mt-3">
-            {{ $tagihan->links('pagination::bootstrap-4') }}
         </div>
     </div>
+
+    <!-- Include DataTables JS and CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Popup JS -->
+    <script>
+        $(document).on('click', '.process', function(event) {
+            const id = $(this).data('id');
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Proses VA',
+                text: `Anda akan memproses data dengan ID: ${id}`,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Proses',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/va/generate/${id}`,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data berhasil diproses.'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: 'Terjadi kesalahan, coba lagi nanti.'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "language": {
+                    "search": "Search:",
+                    "lengthMenu": "Tampilkan _MENU_ entri",
+                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                    "paginate": {
+                        "first": "Awal",
+                        "last": "Akhir",
+                        "next": "Next",
+                        "previous": "Previous"
+                    },
+                    "emptyTable": "Tidak ada data tersedia"
+                }
+            });
+        });
+    </script>
 @endsection
