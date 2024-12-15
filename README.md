@@ -36,6 +36,8 @@
 - Memberikan transparansi kepada pihak bank terkait status transaksi dan permintaan pembayaran.
 - Menyediakan data yang terstruktur dan konsisten melalui pengelolaan master data dan log transaksi.
 
+---
+
 ## Cara Menjalankan Proyek
 
 Ikuti langkah-langkah di bawah ini untuk menjalankan proyek ini di lingkungan lokal Anda.
