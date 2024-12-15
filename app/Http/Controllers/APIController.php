@@ -4,17 +4,23 @@ use Illuminate\Http\Request;
 use App\Tagihan;
 use App\DetailTagihan;
 use App\Va;
+use App\KomponenPembayaran;
+use App\Mahasiswa;
 
 
 class APIController extends Controller
 {
-
-    public function listVa()
+    public function listVa(Request $request)
     {
-        // Ambil semua data VA beserta relasi tagihan dan mahasiswa
-        $vaData = Va::with(['tagihan', 'mahasiswa'])->paginate(10);
+        $query = Va::with(['tagihan', 'mahasiswa']);
 
-        // Jika tidak ada data
+        // Filter berdasarkan ID mahasiswa jika diberikan
+        if ($request->filled('id_mahasiswa')) {
+            $query->where('id_mahasiswa', $request->id_mahasiswa);
+        }
+
+        $vaData = $query->paginate(10);
+
         if ($vaData->isEmpty()) {
             return response()->json([
                 'success' => false,
@@ -22,7 +28,6 @@ class APIController extends Controller
             ], 404);
         }
 
-        // Return data VA
         return response()->json([
             'success' => true,
             'data' => $vaData,
@@ -52,6 +57,29 @@ class APIController extends Controller
         ], 200);
     }
 
+    public function detailVaMahasiswa($id_mahasiswa)
+    {
+        // Mengambil data VA berdasarkan id_mahasiswa
+        $va = Va::with(['tagihan', 'mahasiswa'])
+            ->where('id_mahasiswa', $id_mahasiswa) // Filter berdasarkan ID mahasiswa
+            ->first(); // Hanya ambil data pertama
+
+        // Jika data VA tidak ditemukan
+        if (!$va) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data VA tidak ditemukan untuk ID mahasiswa ini.',
+            ], 404);
+        }
+
+        // Mengembalikan data VA dalam bentuk JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Data VA berhasil diambil.',
+            'data' => $va,
+        ], 200);
+    }
+
     // GET: Menampilkan data tagihan
     public function getTagihan(Request $request)
     {
@@ -77,6 +105,65 @@ class APIController extends Controller
             ], 200)->header('Access-Control-Allow-Origin', '*');
         }
     }
+
+    // GET: Menampilkan detail data tagihan berdasarkan ID
+    public function getDetailTagihan($id)
+    {
+        // Mencari tagihan berdasarkan ID
+        $tagihan = Tagihan::with('detailTagihan')->find($id);
+
+        if (!$tagihan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Tidak Ditemukan'
+            ], 404)->header('Access-Control-Allow-Origin', '*');
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $tagihan
+        ], 200)->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function getDetailTagihanMhs($id_mahasiswa)
+    {
+        try {
+            // Validasi apakah mahasiswa dengan id_mahasiswa ada
+            $mahasiswa = Mahasiswa::find($id_mahasiswa);
+            if (!$mahasiswa) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mahasiswa tidak ditemukan.'
+                ], 404);
+            }
+
+            // Ambil data tagihan berdasarkan id_mahasiswa
+            $tagihan = Tagihan::where('id_mahasiswa', $id_mahasiswa)->with(['detailTagihan', 'va'])->get();
+
+            if ($tagihan->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada tagihan untuk mahasiswa ini.'
+                ], 404);
+            }
+
+            // Mengembalikan response dalam bentuk JSON
+            return response()->json([
+                'success' => true,
+                'message' => 'Data tagihan berhasil diambil.',
+                'data' => $tagihan
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Tangani jika ada error
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengambil data tagihan.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
     // POST: Menambahkan data tagihan
     public function createTagihan(Request $request)
@@ -209,5 +296,33 @@ class APIController extends Controller
             'message' => 'Tagihan berhasil dihapus.'
         ], 200);
     }
+
+    // GET: Menampilkan data komponen pembayaran
+    public function getManajemenPembayaran(Request $request)
+    {
+        // Query untuk mendapatkan data komponen pembayaran
+        $query = KomponenPembayaran::query();
+
+        // Filter berdasarkan nama atau atribut lain jika diperlukan
+        if ($request->filled('filter')) {
+            $query->where('nama_komponen', 'like', '%' . $request->filter . '%');
+        }
+
+        // Pagination, 10 data per halaman
+        $komponenPembayaran = $query->paginate(10);
+
+        if ($komponenPembayaran->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Tidak Ditemukan',
+            ], 200)->header('Access-Control-Allow-Origin', '*');
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $komponenPembayaran,
+        ], 200)->header('Access-Control-Allow-Origin', '*');
+    }
+
 
 }

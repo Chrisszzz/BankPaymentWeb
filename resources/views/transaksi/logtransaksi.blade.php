@@ -3,7 +3,6 @@
 @section('content')
 <div class="container">
     <h2 class="text-center mb-4"><strong>Log Transaksi</strong></h2>
-    <br>
 
     <!-- Form Filter -->
     <form method="GET" action="{{ route('logtransaksi') }}">
@@ -16,10 +15,6 @@
                 <label for="tanggal_sampai">Tanggal Akhir</label>
                 <input type="date" name="tanggal_sampai" id="tanggal_sampai" class="form-control" value="{{ request('tanggal_sampai') }}">
             </div>
-            <div class="col-md-4">
-                <label for="filter_keyword">Search</label>
-                <input type="text" name="filter_keyword" id="filter_keyword" class="form-control" placeholder="Cari instansi atau mahasiswa" value="{{ request('filter_keyword') }}">
-            </div>
             <div class="ms-2 align-self-end">
                 <button type="submit" class="btn btn-primary">Filter</button>
                 <a href="{{ route('logtransaksi') }}" class="btn btn-secondary ms-2">Reset</a>
@@ -27,13 +22,13 @@
         </div>
     </form>
 
-    <!-- Tabel Data -->
+    <!-- Tabel Data dengan DataTable -->
     <div class="card">
         <div class="card-header" style="background-color: #3F51B5; color: white;">
-            <h5>Log Transaksi</h5>
+            <h5 class="mb-0">Log Transaksi</h5>
         </div>
         <div class="card-body">
-            <table class="table table-striped text-center">
+            <table id="logTransaksiTable" class="table table-striped">
                 <thead>
                     <tr>
                         <th>No. VA</th>
@@ -65,8 +60,55 @@
             </table>
         </div>
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ route('logtransaksi.exportpdf', request()->all()) }}" class="btn btn-primary">Export PDF</a>
+            <button id="exportPdfBtn" class="btn btn-primary">Export PDF</button>
         </div>
     </div>
 </div>
+
+ <!-- Include DataTables JS and CSS -->
+ <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+ <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- DataTable dan Popup JS -->
+<script>
+    $(document).ready(function() {
+        // Inisialisasi DataTable
+        $('#logTransaksiTable').DataTable({
+            "language": {
+                "search": "Search:",
+                "lengthMenu": "Tampilkan _MENU_ entri",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                "paginate": {
+                    "first": "Awal",
+                    "last": "Akhir",
+                    "next": "Next",
+                    "previous": "Previous"
+                },
+                "emptyTable": "Tidak ada data tersedia"
+                }
+        });
+
+        // Popup Konfirmasi Export PDF
+        $('#exportPdfBtn').on('click', function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Export Data',
+                text: 'Data Transaksi akan di export ke PDF',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Export',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('logtransaksi.exportpdf', request()->all()) }}";
+                }
+            });
+        });
+    });
+</script>
 @endsection

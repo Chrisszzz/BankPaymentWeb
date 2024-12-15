@@ -163,6 +163,7 @@
         .card-header {
             background-color: #3F51B5;
         }
+
     </style>
 </head>
 
@@ -190,7 +191,7 @@
                     <i class="bi bi-building"></i> Data Transaksi
                 </a>
                 <a href="/logtransaksi"
-                    class="d-block py-2 text-white {{ request()->is('reports') ? 'bg-primary' : '' }}">
+                    class="d-block py-2 text-white {{ request()->is('logtransaksi') ? 'bg-primary' : '' }}">
                     <i class="bi bi-file-bar-graph"></i> Log Transaksi
                 </a>
                 <a href=" {{ route('index.komponen_pembayaran') }} "
