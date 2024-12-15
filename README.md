@@ -50,7 +50,7 @@ php artisan key:generate
 
 Periksa file .env Anda, dan pastikan baris APP_KEY telah terisi dengan kunci yang valid.
 
-5. Jalankan Server Laravel
+### 5. Jalankan Server Laravel
 Jalankan perintah berikut untuk memulai server pengembangan Laravel:
 php artisan serve
 
@@ -58,11 +58,11 @@ Setelah server berjalan, buka browser Anda dan akses proyek di:
 http://localhost:8000.
 
 ### Fitur
-Login dan autentikasi pengguna.
-Pengelolaan virtual account.
-Pembayaran tagihan secara otomatis.
+- Login dan autentikasi pengguna.
+- Pengelolaan virtual account.
+- Pembayaran tagihan secara otomatis.
 
 ###Teknologi
-Laravel 6
-MySQL
-Bootstrap 4
+- Laravel 6
+- MySQL
+- Bootstrap 4
