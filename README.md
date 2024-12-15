@@ -1,5 +1,5 @@
 # Bank Payment Web
-# Deskripsi Proyek
+## Deskripsi Proyek
 
 **Sistem Pembayaran Universitas** adalah aplikasi berbasis web yang dirancang untuk mempermudah pengelolaan pembayaran di tingkat universitas melalui mekanisme virtual account (VA). Sistem ini fokus pada pengelolaan oleh **Admin Bank**, dengan fitur-fitur utama yang mendukung kelancaran operasional pembayaran.
 
