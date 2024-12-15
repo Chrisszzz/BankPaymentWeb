@@ -54,8 +54,6 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan proyek ini di lingkungan lo
    - Masukkan nama database, misalnya: `bank_payment_web`.
    - Klik **Create**.
 
----
-
 ### 2. Instal Dependensi Laravel
 1. Pastikan Anda memiliki **Composer** terinstal di komputer Anda. Jika belum, unduh dari [getcomposer.org](https://getcomposer.org/).
 2. Buka terminal atau command prompt di direktori proyek ini.
