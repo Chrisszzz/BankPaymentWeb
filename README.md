@@ -1,78 +1,71 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Bank Payment Web
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Proyek ini adalah sistem pembayaran menggunakan virtual account berbasis web yang dibuat dengan Laravel.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Cara Menjalankan Proyek
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Ikuti langkah-langkah di bawah ini untuk menjalankan proyek ini di lingkungan lokal Anda.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Aktifkan XAMPP dan Konfigurasi Database
+1. Buka **XAMPP Control Panel** dan aktifkan modul berikut:
+   - Klik tombol **Start** pada **Apache**.
+   - Klik tombol **Start** pada **MySQL**.
+   
+2. Buka **phpMyAdmin** melalui [http://localhost/phpmyadmin](http://localhost/phpmyadmin).
 
-## Learning Laravel
+3. Buat database baru:
+   - Klik **New** di sisi kiri.
+   - Masukkan nama database, misalnya: `bank_payment_web`.
+   - Klik **Create**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Instal Dependensi Laravel
+1. Pastikan Anda memiliki **Composer** terinstal di komputer Anda. Jika belum, unduh dari [getcomposer.org](https://getcomposer.org/).
+2. Buka terminal atau command prompt di direktori proyek ini.
+3. Jalankan perintah berikut untuk menginstal semua dependensi Laravel:
 
-## Laravel Sponsors
+   ```bash
+   composer install
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### 3. Atur File Konfigurasi .env
+Pastikan file .env tersedia di direktori root proyek. Jika tidak ada, salin file .env.example menjadi .env:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
+jalankan di terminal perintah dibawah ini :
+cp .env.example .env
+Edit file .env menggunakan editor teks dan sesuaikan pengaturan database Anda:
 
-## Contributing
+plaintext
+Salin kode
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bank_payment_web
+DB_USERNAME=root
+DB_PASSWORD=
+(Gantilah DB_USERNAME dan DB_PASSWORD sesuai dengan konfigurasi MySQL Anda. Default biasanya root tanpa password.)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Generate Application Key
+Jalankan perintah berikut untuk menghasilkan kunci enkripsi aplikasi Laravel:
+php artisan key:generate
 
-## Code of Conduct
+Periksa file .env Anda, dan pastikan baris APP_KEY telah terisi dengan kunci yang valid.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5. Jalankan Server Laravel
+Jalankan perintah berikut untuk memulai server pengembangan Laravel:
+php artisan serve
 
-## Security Vulnerabilities
+Setelah server berjalan, buka browser Anda dan akses proyek di:
+http://localhost:8000.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Fitur
+Login dan autentikasi pengguna.
+Pengelolaan virtual account.
+Pembayaran tagihan secara otomatis.
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+###Teknologi
+Laravel 6
+MySQL
+Bootstrap 4
