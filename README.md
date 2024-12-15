@@ -1,8 +1,40 @@
 # Bank Payment Web
+# Deskripsi Proyek
 
-Proyek ini adalah sistem pembayaran menggunakan virtual account berbasis web yang dibuat dengan Laravel.
+**Sistem Pembayaran Universitas** adalah aplikasi berbasis web yang dirancang untuk mempermudah pengelolaan pembayaran di tingkat universitas melalui mekanisme virtual account (VA). Sistem ini fokus pada pengelolaan oleh **Admin Bank**, dengan fitur-fitur utama yang mendukung kelancaran operasional pembayaran.
 
 ---
+
+## Fitur Utama
+
+1. **Manajemen Request Virtual Account (VA)**  
+   - Admin bank dapat menangani request VA yang masuk dari sistem universitas.  
+   - Nomor VA akan dihasilkan (digenerate) secara otomatis berdasarkan permintaan.
+
+2. **Validasi Transaksi Berhasil**  
+   - Sistem mampu memvalidasi transaksi pembayaran yang berhasil.  
+   - Status pembayaran akan diperbarui sesuai dengan hasil validasi.
+
+3. **Log Transaksi**  
+   - Admin bank dapat melihat log semua transaksi yang telah terjadi.  
+   - Log mencakup detail seperti nomor VA, waktu transaksi, status, dan jumlah pembayaran.
+
+4. **Manajemen Master Data**  
+   - Admin bank dapat menetapkan harga untuk item atau layanan tertentu.  
+   - Master data memungkinkan pengelolaan informasi yang konsisten dan terpusat.
+
+5. **CRUD Instansi**  
+   - Admin bank dapat melakukan operasi **Create**, **Read**, **Update**, dan **Delete** terhadap data instansi yang bekerja sama dengan sistem.  
+   - Mempermudah pengelolaan mitra universitas dalam sistem pembayaran.
+
+---
+
+## Tujuan Proyek
+
+- Mempermudah admin bank dalam mengelola pembayaran universitas.
+- Mengurangi kesalahan manual dalam proses validasi dan pencatatan transaksi.
+- Memberikan transparansi kepada pihak bank terkait status transaksi dan permintaan pembayaran.
+- Menyediakan data yang terstruktur dan konsisten melalui pengelolaan master data dan log transaksi.
 
 ## Cara Menjalankan Proyek
 
