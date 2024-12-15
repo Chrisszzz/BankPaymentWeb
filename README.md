@@ -34,21 +34,15 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan proyek ini di lingkungan lo
 Pastikan file .env tersedia di direktori root proyek. Jika tidak ada, salin file .env.example menjadi .env:
 
 jalankan di terminal perintah dibawah ini :
-
-```bash
 cp .env.example .env
 
 Edit file .env menggunakan editor teks dan sesuaikan pengaturan database Anda:
-
-plaintext
-Salin kode
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=bank_payment_web
-DB_USERNAME=root
-DB_PASSWORD=
-(Gantilah DB_USERNAME dan DB_PASSWORD sesuai dengan konfigurasi MySQL Anda. Default biasanya root tanpa password.)
+- DB_CONNECTION=mysql
+- DB_HOST=127.0.0.1
+- DB_PORT=3306
+- DB_DATABASE=bank_payment_web
+- DB_USERNAME=root
+- DB_PASSWORD= (Gantilah DB_USERNAME dan DB_PASSWORD sesuai dengan konfigurasi MySQL Anda. Default biasanya root tanpa password.)
 
 ### 4. Generate Application Key
 Jalankan perintah berikut untuk menghasilkan kunci enkripsi aplikasi Laravel:
